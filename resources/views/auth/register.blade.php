@@ -3,10 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Iniciar sesión | </title>
-
-    <!-- Vite Assets (Guía Sección 7.1 y 8.7) -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <title>Crear cuenta</title>
 
     <!-- Bootstrap CSS v5.3.3 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -20,10 +17,11 @@
             align-items: center;
             justify-content: center;
             font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            padding: 1.5rem 0;
         }
         .auth-card {
             width: 100%;
-            max-width: 440px;
+            max-width: 460px;
             background: #ffffff;
             border: 1px solid #e2e8f0;
             border-radius: 12px;
@@ -43,24 +41,15 @@
 <body>
     <div class="auth-card">
         <div class="text-start mb-4">
-            <h4 class="brand-title mb-1">SecureApp</h4>
-            <h5 class="fw-semibold text-secondary mb-1">Iniciar sesión</h5>
-            <p class="text-muted small mb-0">Acceda utilizando sus credenciales institucionales.</p>
+            <h4 class="brand-title mb-1">Crear cuenta</h4>
+            <p class="text-muted small mb-0">Complete los siguientes datos para registrarse en el sistema.</p>
         </div>
 
-        {{-- Mensaje de éxito tras registro u otra acción --}}
-        @if (session('success'))
-            <div class="alert alert-success alert-dismissible fade show small" role="alert">
-                <i class="bi bi-check-circle-fill me-1"></i> {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
-
-        {{-- Mensajes de error de validación o credenciales --}}
+        {{-- Errores de validación --}}
         @if ($errors->any())
             <div class="alert alert-danger alert-dismissible fade show small" role="alert">
-                <strong>No fue posible iniciar sesión.</strong>
-                <ul class="mb-0 ps-3 mt-1">
+                <div class="fw-semibold mb-1"><i class="bi bi-exclamation-triangle-fill me-1"></i> Por favor verifique los siguientes campos:</div>
+                <ul class="mb-0 ps-3">
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
                     @endforeach
@@ -69,8 +58,22 @@
             </div>
         @endif
 
-        <form method="POST" action="{{ route('login.store') }}">
+        <form method="POST" action="{{ route('register.store') }}">
             @csrf
+
+            <div class="mb-3">
+                <label for="name" class="form-label small fw-semibold text-dark">Nombre completo</label>
+                <input
+                    type="text"
+                    class="form-control @error('name') is-invalid @enderror"
+                    id="name"
+                    name="name"
+                    value="{{ old('name') }}"
+                    placeholder="Ej. Juan Pérez"
+                    required
+                    autofocus
+                >
+            </div>
 
             <div class="mb-3">
                 <label for="email" class="form-label small fw-semibold text-dark">Correo electrónico</label>
@@ -81,9 +84,7 @@
                     name="email"
                     value="{{ old('email') }}"
                     placeholder="ejemplo@dominio.com"
-                    autocomplete="username"
                     required
-                    autofocus
                 >
             </div>
 
@@ -95,31 +96,40 @@
                         class="form-control @error('password') is-invalid @enderror"
                         id="password"
                         name="password"
-                        autocomplete="current-password"
-                        placeholder="••••••••"
+                        placeholder="Mínimo 8 caracteres"
                         required
                     >
-                    <button class="btn btn-outline-secondary btn-toggle-password" type="button" id="togglePassword" aria-label="Mostrar contraseña">
+                    <button class="btn btn-outline-secondary btn-toggle-password" type="button" id="toggleRegPasswordBtn">
                         Mostrar
                     </button>
                 </div>
+                <div class="form-text text-muted small">
+                    Debe incluir al menos 8 caracteres.
+                </div>
             </div>
 
-            <div class="mb-3 form-check">
-                <input type="checkbox" class="form-check-input" id="remember" name="remember" value="1" {{ old('remember') ? 'checked' : '' }}>
-                <label class="form-check-label small text-secondary" for="remember">Recordarme</label>
+            <div class="mb-4">
+                <label for="password_confirmation" class="form-label small fw-semibold text-dark">Confirmar contraseña</label>
+                <input
+                    type="password"
+                    class="form-control"
+                    id="password_confirmation"
+                    name="password_confirmation"
+                    placeholder="Repita su contraseña"
+                    required
+                >
             </div>
 
             <div class="d-grid gap-2">
                 <button type="submit" class="btn btn-primary fw-medium py-2">
-                    Ingresar
+                    Registrarse
                 </button>
             </div>
         </form>
 
         <div class="text-center mt-4 pt-2 border-top">
             <p class="small text-muted mb-0">
-                ¿No tienes una cuenta? <a href="{{ route('register') }}" class="text-decoration-none fw-semibold">Regístrate aquí</a>
+                ¿Ya tienes una cuenta? <a href="{{ route('login') }}" class="text-decoration-none fw-semibold">Inicia sesión</a>
             </p>
         </div>
     </div>
@@ -127,15 +137,14 @@
     <!-- Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        const toggleBtn = document.getElementById('togglePassword');
-        const passwordInput = document.getElementById('password');
+        const toggleRegBtn = document.getElementById('toggleRegPasswordBtn');
+        const regPasswordInput = document.getElementById('password');
 
-        if (toggleBtn && passwordInput) {
-            toggleBtn.addEventListener('click', function () {
-                const isPassword = passwordInput.getAttribute('type') === 'password';
-                passwordInput.setAttribute('type', isPassword ? 'text' : 'password');
-                toggleBtn.textContent = isPassword ? 'Ocultar' : 'Mostrar';
-                toggleBtn.setAttribute('aria-label', isPassword ? 'Ocultar contraseña' : 'Mostrar contraseña');
+        if (toggleRegBtn && regPasswordInput) {
+            toggleRegBtn.addEventListener('click', function () {
+                const isPassword = regPasswordInput.getAttribute('type') === 'password';
+                regPasswordInput.setAttribute('type', isPassword ? 'text' : 'password');
+                toggleRegBtn.textContent = isPassword ? 'Ocultar' : 'Mostrar';
             });
         }
     </script>

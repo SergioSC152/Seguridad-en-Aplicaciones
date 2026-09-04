@@ -1,0 +1,324 @@
+{
+	"info": {
+		"_postman_id": "c1a2b3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d",
+		"name": "SECURE API – Laravel",
+		"description": "Colección de pruebas de validación y seguridad para la API REST con Laravel - CADI Seguridad en Aplicaciones",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://127.0.0.1:8000",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "01 Registro",
+			"item": [
+				{
+					"name": "T01 - Registro válido (201 Created)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Accept", "value": "application/json", "type": "text"},
+							{"key": "Content-Type", "value": "application/json", "type": "text"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Usuario Prueba\",\n  \"email\": \"usuario@test.com\",\n  \"password\": \"Segura12345\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/register",
+							"host": ["{{base_url}}"],
+							"path": ["api", "register"]
+						}
+					}
+				},
+				{
+					"name": "T02 - Email inválido (422 Unprocessable)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Accept", "value": "application/json", "type": "text"},
+							{"key": "Content-Type", "value": "application/json", "type": "text"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Usuario Prueba\",\n  \"email\": \"correo-invalido\",\n  \"password\": \"Segura12345\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/register",
+							"host": ["{{base_url}}"],
+							"path": ["api", "register"]
+						}
+					}
+				},
+				{
+					"name": "T03 - Campos faltantes (422 Unprocessable)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Accept", "value": "application/json", "type": "text"},
+							{"key": "Content-Type", "value": "application/json", "type": "text"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Usuario Prueba\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/register",
+							"host": ["{{base_url}}"],
+							"path": ["api", "register"]
+						}
+					}
+				},
+				{
+					"name": "T04 - Contraseña corta menor a 8 (422 Unprocessable)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Accept", "value": "application/json", "type": "text"},
+							{"key": "Content-Type", "value": "application/json", "type": "text"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Usuario\",\n  \"email\": \"usuario2@test.com\",\n  \"password\": \"123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/register",
+							"host": ["{{base_url}}"],
+							"path": ["api", "register"]
+						}
+					}
+				},
+				{
+					"name": "T05 - Email duplicado (422 Unprocessable)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Accept", "value": "application/json", "type": "text"},
+							{"key": "Content-Type", "value": "application/json", "type": "text"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Usuario Prueba\",\n  \"email\": \"usuario@test.com\",\n  \"password\": \"Segura12345\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/register",
+							"host": ["{{base_url}}"],
+							"path": ["api", "register"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "02 Login",
+			"item": [
+				{
+					"name": "T06 - Login correcto (200 OK y Token)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    if (jsonData.token) {",
+									"        pm.collectionVariables.set('token', jsonData.token);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Accept", "value": "application/json", "type": "text"},
+							{"key": "Content-Type", "value": "application/json", "type": "text"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"usuario@test.com\",\n  \"password\": \"Segura12345\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/login",
+							"host": ["{{base_url}}"],
+							"path": ["api", "login"]
+						}
+					}
+				},
+				{
+					"name": "T07 - Login con password incorrecta (401 Unauthorized)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Accept", "value": "application/json", "type": "text"},
+							{"key": "Content-Type", "value": "application/json", "type": "text"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"usuario@test.com\",\n  \"password\": \"ContrasenaIncorrecta\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/login",
+							"host": ["{{base_url}}"],
+							"path": ["api", "login"]
+						}
+					}
+				},
+				{
+					"name": "T08 - Login con email inexistente (401 Unauthorized)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Accept", "value": "application/json", "type": "text"},
+							{"key": "Content-Type", "value": "application/json", "type": "text"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"noexiste@test.com\",\n  \"password\": \"Segura12345\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/login",
+							"host": ["{{base_url}}"],
+							"path": ["api", "login"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "03 Perfil",
+			"item": [
+				{
+					"name": "T09 - Perfil sin token (401 Unauthorized)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json", "type": "text"}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/profile",
+							"host": ["{{base_url}}"],
+							"path": ["api", "profile"]
+						}
+					}
+				},
+				{
+					"name": "T10 - Perfil con token inválido (401 Unauthorized)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json", "type": "text"},
+							{"key": "Authorization", "value": "Bearer 123456789falso", "type": "text"}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/profile",
+							"host": ["{{base_url}}"],
+							"path": ["api", "profile"]
+						}
+					}
+				},
+				{
+					"name": "T11 - Perfil con token válido (200 OK)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json", "type": "text"},
+							{"key": "Authorization", "value": "Bearer {{token}}", "type": "text"}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/profile",
+							"host": ["{{base_url}}"],
+							"path": ["api", "profile"]
+						}
+					}
+				},
+				{
+					"name": "T12 - Inspección de datos sensibles (200 OK)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json", "type": "text"},
+							{"key": "Authorization", "value": "Bearer {{token}}", "type": "text"}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/profile",
+							"host": ["{{base_url}}"],
+							"path": ["api", "profile"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "04 Logout",
+			"item": [
+				{
+					"name": "T13a - Logout con token válido (200 OK)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Accept", "value": "application/json", "type": "text"},
+							{"key": "Content-Type", "value": "application/json", "type": "text"},
+							{"key": "Authorization", "value": "Bearer {{token}}", "type": "text"}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/logout",
+							"host": ["{{base_url}}"],
+							"path": ["api", "logout"]
+						}
+					}
+				},
+				{
+					"name": "T13b - Consultar perfil tras logout (401 Unauthorized)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{"key": "Accept", "value": "application/json", "type": "text"},
+							{"key": "Authorization", "value": "Bearer {{token}}", "type": "text"}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/profile",
+							"host": ["{{base_url}}"],
+							"path": ["api", "profile"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "05 Pruebas de seguridad",
+			"item": [
+				{
+					"name": "T14 - Solicitudes repetitivas Rate Limiting (429 Too Many Requests)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{"key": "Accept", "value": "application/json", "type": "text"},
+							{"key": "Content-Type", "value": "application/json", "type": "text"}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"usuario@test.com\",\n  \"password\": \"ClaveErronea123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/login",
+							"host": ["{{base_url}}"],
+							"path": ["api", "login"]
+						}
+					}
+				}
+			]
+		}
+	]
+}

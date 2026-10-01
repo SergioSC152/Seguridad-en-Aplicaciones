@@ -1,0 +1,18 @@
+Comando ejecutado el 1 de octubre de 2026:
+php vendor/phpunit/phpunit/phpunit --filter=DashboardAnalyticsTest --testdox
+
+PHPUnit 11.5.56
+Runtime: PHP 8.2.12
+Configuración: phpunit.xml; SQLite en memoria.
+
+Dashboard Analytics (Tests\Feature\DashboardAnalytics)
+PASS Dashboard shows real account scoped inventory metrics
+PASS Dashboard renders an empty inventory state
+PASS Dashboard requires authentication
+PASS Dashboard hides commercial data and links without permissions
+PASS Dashboard shows only the commercial module granted to the role
+PASS Root dashboard uses owned commercial data and excludes closed pipeline value
+
+OK (6 tests, 33 assertions)
+
+Registro del resultado obtenido. No sustituye las capturas manuales ni la validación con Postman.

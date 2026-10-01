@@ -1,0 +1,220 @@
+
+  GET|HEAD        / .................................................................... home › PublicPortalController
+                  ⇂ web
+  GET|HEAD        admin/categorias-ganado . admin.livestock-categories.index › Admin\LivestockCategoryController@index
+                  ⇂ web
+                  ⇂ Illuminate\Auth\Middleware\Authenticate
+  POST            admin/categorias-ganado . admin.livestock-categories.store › Admin\LivestockCategoryController@store
+                  ⇂ web
+                  ⇂ Illuminate\Auth\Middleware\Authenticate
+  PUT|PATCH       admin/categorias-ganado/{category} admin.livestock-categories.update › Admin\LivestockCategoryController@update
+                  ⇂ web
+                  ⇂ Illuminate\Auth\Middleware\Authenticate
+  DELETE          admin/categorias-ganado/{category} admin.livestock-categories.destroy › Admin\LivestockCategoryController@destroy
+                  ⇂ web
+                  ⇂ Illuminate\Auth\Middleware\Authenticate
+  GET|HEAD        admin/categorias-ganado/{category}/edit admin.livestock-categories.edit › Admin\LivestockCategoryController@edit
+                  ⇂ web
+                  ⇂ Illuminate\Auth\Middleware\Authenticate
+  GET|HEAD        admin/clientes .................................. admin.clients.index › Admin\ClientController@index
+                  ⇂ web
+                  ⇂ Illuminate\Auth\Middleware\Authenticate
+                  ⇂ App\Http\Middleware\EnsurePermission:clients.manage
+  POST            admin/clientes .................................. admin.clients.store › Admin\ClientController@store
+                  ⇂ web
+                  ⇂ Illuminate\Auth\Middleware\Authenticate
+                  ⇂ App\Http\Middleware\EnsurePermission:clients.manage
+  PUT|PATCH       admin/clientes/{client} ....................... admin.clients.update › Admin\ClientController@update
+                  ⇂ web
+                  ⇂ Illuminate\Auth\Middleware\Authenticate
+                  ⇂ App\Http\Middleware\EnsurePermission:clients.manage
+  DELETE          admin/clientes/{client} ..................... admin.clients.destroy › Admin\ClientController@destroy
+                  ⇂ web
+                  ⇂ Illuminate\Auth\Middleware\Authenticate
+                  ⇂ App\Http\Middleware\EnsurePermission:clients.manage
+  GET|HEAD        admin/clientes/{client}/edit ...................... admin.clients.edit › Admin\ClientController@edit
+                  ⇂ web
+                  ⇂ Illuminate\Auth\Middleware\Authenticate
+                  ⇂ App\Http\Middleware\EnsurePermission:clients.manage
+  GET|HEAD        admin/configuracion/correo ............ admin.settings.mail.edit › Admin\MailSettingsController@edit
+                  ⇂ web
+                  ⇂ Illuminate\Auth\Middleware\Authenticate
+                  ⇂ App\Http\Middleware\EnsureMailSettingsAdmin
+  PUT             admin/configuracion/correo ........ admin.settings.mail.update › Admin\MailSettingsController@update
+                  ⇂ web
+                  ⇂ Illuminate\Auth\Middleware\Authenticate
+                  ⇂ App\Http\Middleware\EnsureMailSettingsAdmin
+                  ⇂ Illuminate\Routing\Middleware\ThrottleRequests:mail-settings-update
+  GET|HEAD        admin/leads ......................................... admin.leads.index › Admin\LeadController@index
+                  ⇂ web
+                  ⇂ Illuminate\Auth\Middleware\Authenticate
+                  ⇂ App\Http\Middleware\EnsurePermission:leads.manage
+  POST            admin/leads ......................................... admin.leads.store › Admin\LeadController@store
+                  ⇂ web
+                  ⇂ Illuminate\Auth\Middleware\Authenticate
+                  ⇂ App\Http\Middleware\EnsurePermission:leads.manage
+  PUT|PATCH       admin/leads/{lead} ................................ admin.leads.update › Admin\LeadController@update
+                  ⇂ web
+                  ⇂ Illuminate\Auth\Middleware\Authenticate
+                  ⇂ App\Http\Middleware\EnsurePermission:leads.manage
+  DELETE          admin/leads/{lead} .............................. admin.leads.destroy › Admin\LeadController@destroy
+                  ⇂ web
+                  ⇂ Illuminate\Auth\Middleware\Authenticate
+                  ⇂ App\Http\Middleware\EnsurePermission:leads.manage
+  GET|HEAD        admin/leads/{lead}/edit ............................... admin.leads.edit › Admin\LeadController@edit
+                  ⇂ web
+                  ⇂ Illuminate\Auth\Middleware\Authenticate
+                  ⇂ App\Http\Middleware\EnsurePermission:leads.manage
+  GET|HEAD        admin/lotes ................... admin.livestock-batches.index › Admin\LivestockBatchController@index
+                  ⇂ web
+                  ⇂ Illuminate\Auth\Middleware\Authenticate
+  POST            admin/lotes ................... admin.livestock-batches.store › Admin\LivestockBatchController@store
+                  ⇂ web
+                  ⇂ Illuminate\Auth\Middleware\Authenticate
+  PUT|PATCH       admin/lotes/{batch} ......... admin.livestock-batches.update › Admin\LivestockBatchController@update
+                  ⇂ web
+                  ⇂ Illuminate\Auth\Middleware\Authenticate
+  DELETE          admin/lotes/{batch} ....... admin.livestock-batches.destroy › Admin\LivestockBatchController@destroy
+                  ⇂ web
+                  ⇂ Illuminate\Auth\Middleware\Authenticate
+  GET|HEAD        admin/lotes/{batch}/edit ........ admin.livestock-batches.edit › Admin\LivestockBatchController@edit
+                  ⇂ web
+                  ⇂ Illuminate\Auth\Middleware\Authenticate
+  GET|HEAD        admin/media ........................................ admin.media.index › Admin\MediaController@index
+                  ⇂ web
+                  ⇂ Illuminate\Auth\Middleware\Authenticate
+                  ⇂ App\Http\Middleware\EnsurePermission:content.manage
+  POST            admin/media ........................................ admin.media.store › Admin\MediaController@store
+                  ⇂ web
+                  ⇂ Illuminate\Auth\Middleware\Authenticate
+                  ⇂ App\Http\Middleware\EnsurePermission:content.manage
+  PUT             admin/media/{media} .............................. admin.media.update › Admin\MediaController@update
+                  ⇂ web
+                  ⇂ Illuminate\Auth\Middleware\Authenticate
+                  ⇂ App\Http\Middleware\EnsurePermission:content.manage
+  DELETE          admin/media/{media} ............................ admin.media.destroy › Admin\MediaController@destroy
+                  ⇂ web
+                  ⇂ Illuminate\Auth\Middleware\Authenticate
+                  ⇂ App\Http\Middleware\EnsurePermission:content.manage
+  GET|HEAD        admin/news ........................................... admin.news.index › Admin\NewsController@index
+                  ⇂ web
+                  ⇂ Illuminate\Auth\Middleware\Authenticate
+                  ⇂ App\Http\Middleware\EnsurePermission:content.manage
+  POST            admin/news ........................................... admin.news.store › Admin\NewsController@store
+                  ⇂ web
+                  ⇂ Illuminate\Auth\Middleware\Authenticate
+                  ⇂ App\Http\Middleware\EnsurePermission:content.manage
+  PUT             admin/news/{news} .................................. admin.news.update › Admin\NewsController@update
+                  ⇂ web
+                  ⇂ Illuminate\Auth\Middleware\Authenticate
+                  ⇂ App\Http\Middleware\EnsurePermission:content.manage
+  DELETE          admin/news/{news} ................................ admin.news.destroy › Admin\NewsController@destroy
+                  ⇂ web
+                  ⇂ Illuminate\Auth\Middleware\Authenticate
+                  ⇂ App\Http\Middleware\EnsurePermission:content.manage
+  GET|HEAD        admin/pipeline ................. admin.sales-pipeline.index › Admin\SalesOpportunityController@index
+                  ⇂ web
+                  ⇂ Illuminate\Auth\Middleware\Authenticate
+                  ⇂ App\Http\Middleware\EnsurePermission:sales-pipeline.manage
+  POST            admin/pipeline ................. admin.sales-pipeline.store › Admin\SalesOpportunityController@store
+                  ⇂ web
+                  ⇂ Illuminate\Auth\Middleware\Authenticate
+                  ⇂ App\Http\Middleware\EnsurePermission:sales-pipeline.manage
+  PUT|PATCH       admin/pipeline/{opportunity} . admin.sales-pipeline.update › Admin\SalesOpportunityController@update
+                  ⇂ web
+                  ⇂ Illuminate\Auth\Middleware\Authenticate
+                  ⇂ App\Http\Middleware\EnsurePermission:sales-pipeline.manage
+  DELETE          admin/pipeline/{opportunity} admin.sales-pipeline.destroy › Admin\SalesOpportunityController@destroy
+                  ⇂ web
+                  ⇂ Illuminate\Auth\Middleware\Authenticate
+                  ⇂ App\Http\Middleware\EnsurePermission:sales-pipeline.manage
+  GET|HEAD        admin/pipeline/{opportunity}/edit admin.sales-pipeline.edit › Admin\SalesOpportunityController@edit
+                  ⇂ web
+                  ⇂ Illuminate\Auth\Middleware\Authenticate
+                  ⇂ App\Http\Middleware\EnsurePermission:sales-pipeline.manage
+  GET|HEAD        admin/roles ......................................... admin.roles.index › Admin\RoleController@index
+                  ⇂ web
+                  ⇂ Illuminate\Auth\Middleware\Authenticate
+                  ⇂ App\Http\Middleware\EnsurePlatformAdmin
+  POST            admin/roles ......................................... admin.roles.store › Admin\RoleController@store
+                  ⇂ web
+                  ⇂ Illuminate\Auth\Middleware\Authenticate
+                  ⇂ App\Http\Middleware\EnsurePlatformAdmin
+  PUT             admin/roles/usuarios/{user} ....................... admin.roles.assign › Admin\RoleController@assign
+                  ⇂ web
+                  ⇂ Illuminate\Auth\Middleware\Authenticate
+                  ⇂ App\Http\Middleware\EnsurePlatformAdmin
+  PUT             admin/roles/{role} ................................ admin.roles.update › Admin\RoleController@update
+                  ⇂ web
+                  ⇂ Illuminate\Auth\Middleware\Authenticate
+                  ⇂ App\Http\Middleware\EnsurePlatformAdmin
+  DELETE          admin/roles/{role} .............................. admin.roles.destroy › Admin\RoleController@destroy
+                  ⇂ web
+                  ⇂ Illuminate\Auth\Middleware\Authenticate
+                  ⇂ App\Http\Middleware\EnsurePlatformAdmin
+  POST            api/login ................................................................. Api\AuthController@login
+                  ⇂ api
+                  ⇂ Illuminate\Routing\Middleware\ThrottleRequests:login
+  POST            api/logout ............................................................... Api\AuthController@logout
+                  ⇂ api
+                  ⇂ Illuminate\Auth\Middleware\Authenticate:sanctum
+  GET|HEAD        api/profile ............................................................. Api\AuthController@profile
+                  ⇂ api
+                  ⇂ Illuminate\Auth\Middleware\Authenticate:sanctum
+  POST            api/register ........................................................... Api\AuthController@register
+                  ⇂ api
+                  ⇂ Illuminate\Routing\Middleware\ThrottleRequests:login
+  GET|HEAD        contacto ..................................................... contact.show › ContactController@show
+                  ⇂ web
+  POST            contacto ..................................................... contact.send › ContactController@send
+                  ⇂ web
+  GET|HEAD        dashboard .................................................... dashboard › Admin\DashboardController
+                  ⇂ web
+                  ⇂ Illuminate\Auth\Middleware\Authenticate
+  GET|HEAD        forgot-password ..................... password.request › Auth\PasswordRecoveryController@requestForm
+                  ⇂ web
+                  ⇂ Illuminate\Auth\Middleware\RedirectIfAuthenticated
+  POST            forgot-password .............................. password.email › Auth\PasswordRecoveryController@send
+                  ⇂ web
+                  ⇂ Illuminate\Auth\Middleware\RedirectIfAuthenticated
+                  ⇂ Illuminate\Routing\Middleware\ThrottleRequests:otp-send
+  POST            forgot-password/resend ................ password.otp.resend › Auth\PasswordRecoveryController@resend
+                  ⇂ web
+                  ⇂ Illuminate\Auth\Middleware\RedirectIfAuthenticated
+                  ⇂ Illuminate\Routing\Middleware\ThrottleRequests:otp-send
+  GET|HEAD        forgot-password/verify ................. password.otp.form › Auth\PasswordRecoveryController@otpForm
+                  ⇂ web
+                  ⇂ Illuminate\Auth\Middleware\RedirectIfAuthenticated
+  POST            forgot-password/verify ................ password.otp.verify › Auth\PasswordRecoveryController@verify
+                  ⇂ web
+                  ⇂ Illuminate\Auth\Middleware\RedirectIfAuthenticated
+                  ⇂ Illuminate\Routing\Middleware\ThrottleRequests:otp-verify
+  GET|HEAD        login .......................................................... login › Auth\LoginController@create
+                  ⇂ web
+                  ⇂ Illuminate\Auth\Middleware\RedirectIfAuthenticated
+  POST            login ..................................................... login.store › Auth\LoginController@store
+                  ⇂ web
+                  ⇂ Illuminate\Auth\Middleware\RedirectIfAuthenticated
+                  ⇂ Illuminate\Routing\Middleware\ThrottleRequests:login
+  POST            logout ....................................................... logout › Auth\LoginController@destroy
+                  ⇂ web
+                  ⇂ Illuminate\Auth\Middleware\Authenticate
+  GET|HEAD        register ............................................ register › Auth\LoginController@createRegister
+                  ⇂ web
+                  ⇂ Illuminate\Auth\Middleware\RedirectIfAuthenticated
+  POST            register ............................................ register.store › Auth\LoginController@register
+                  ⇂ web
+                  ⇂ Illuminate\Auth\Middleware\RedirectIfAuthenticated
+  GET|HEAD        reset-password ..................... password.reset.form › Auth\PasswordRecoveryController@resetForm
+                  ⇂ web
+                  ⇂ Illuminate\Auth\Middleware\RedirectIfAuthenticated
+  POST            reset-password .............................. password.reset › Auth\PasswordRecoveryController@reset
+                  ⇂ web
+                  ⇂ Illuminate\Auth\Middleware\RedirectIfAuthenticated
+  GET|HEAD        sanctum/csrf-cookie .............. sanctum.csrf-cookie › Laravel\Sanctum › CsrfCookieController@show
+                  ⇂ web
+  GET|HEAD        storage/{path} storage.local › vendor/laravel/framework/src/Illuminate/Filesystem/FilesystemServiceProvider.php:98
+  PUT             storage/{path} storage.local.upload › vendor/laravel/framework/src/Illuminate/Filesystem/FilesystemServiceProvider.php:106
+  GET|HEAD        up ..... vendor/laravel/framework/src/Illuminate/Foundation/Configuration/ApplicationBuilder.php:219
+
+                                                                                                   Showing [64] routes

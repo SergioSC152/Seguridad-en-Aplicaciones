@@ -43,6 +43,9 @@ class DashboardAnalyticsService
         $categoryBreakdown = $allCategories->take(6)->values();
         $leads = $user->leads();
         $opportunities = $user->salesOpportunities();
+        $canManageClients = $user->hasPermissionTo('clients.manage');
+        $canManageLeads = $user->hasPermissionTo('leads.manage');
+        $canManageOpportunities = $user->hasPermissionTo('sales-pipeline.manage');
 
         return [
             'metrics' => [
@@ -50,12 +53,12 @@ class DashboardAnalyticsService
                 'active_batches' => (clone $activeBatches)->count(),
                 'weighted_average_weight' => $weightSummary === null ? null : round((float) $weightSummary, 2),
                 'categories_with_inventory' => $categoriesWithInventory,
-                'clients' => $user->clients()->count(),
-                'leads' => (clone $leads)->count(),
-                'new_leads' => (clone $leads)->where('status', 'new')->count(),
-                'open_opportunities' => (clone $opportunities)->whereIn('stage', ['contact', 'visit', 'negotiation'])->count(),
-                'open_pipeline_value' => (float) (clone $opportunities)->whereIn('stage', ['contact', 'visit', 'negotiation'])->sum('estimated_value'),
-                'won_opportunities' => (clone $opportunities)->where('stage', 'won')->count(),
+                'clients' => $canManageClients ? $user->clients()->count() : null,
+                'leads' => $canManageLeads ? (clone $leads)->count() : null,
+                'new_leads' => $canManageLeads ? (clone $leads)->where('status', 'new')->count() : null,
+                'open_opportunities' => $canManageOpportunities ? (clone $opportunities)->whereIn('stage', ['contact', 'visit', 'negotiation'])->count() : null,
+                'open_pipeline_value' => $canManageOpportunities ? (float) (clone $opportunities)->whereIn('stage', ['contact', 'visit', 'negotiation'])->sum('estimated_value') : null,
+                'won_opportunities' => $canManageOpportunities ? (clone $opportunities)->where('stage', 'won')->count() : null,
             ],
             'categoryBreakdown' => $categoryBreakdown,
             'statusCounts' => [

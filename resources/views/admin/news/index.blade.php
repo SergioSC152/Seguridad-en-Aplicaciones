@@ -33,6 +33,7 @@
             border: 1px solid #e2e8f0;
         }
     </style>
+    @include('partials.cowapp-stitch-theme')
 </head>
 <body>
 

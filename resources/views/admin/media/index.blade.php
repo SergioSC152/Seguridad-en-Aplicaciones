@@ -75,6 +75,7 @@
             flex-direction: column;
         }
     </style>
+    @include('partials.cowapp-stitch-theme')
 </head>
 <body>
 

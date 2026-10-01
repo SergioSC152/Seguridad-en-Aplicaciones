@@ -246,6 +246,7 @@
             }
         }
     </style>
+    @include('partials.cowapp-stitch-theme')
 </head>
 <body>
 
@@ -415,6 +416,7 @@
                                 Mantener sesión iniciada
                             </label>
                         </div>
+                        <a href="{{ route('password.request') }}" class="small text-decoration-none fw-semibold" style="color: var(--cow-green-primary);">¿Olvidaste tu contraseña?</a>
                     </div>
 
                     <!-- Botón de Envío -->

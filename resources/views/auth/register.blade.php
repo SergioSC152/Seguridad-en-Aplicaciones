@@ -38,6 +38,7 @@
             cursor: pointer;
         }
     </style>
+    @include('partials.cowapp-stitch-theme')
 </head>
 <body>
     <div class="auth-card">

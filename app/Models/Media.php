@@ -7,9 +7,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Media extends Model
 {
+    public const COWAPP_LOGO_NAME = 'Logo CowApp';
+
     protected $fillable = [
         'name',
         'path',
+        'url',
         'mime_type',
         'size',
         'active',

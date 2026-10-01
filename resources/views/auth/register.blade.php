@@ -3,8 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Crear cuenta</t
-    itle>
+    <title>Crear cuenta | CowApp</title>
 
     <!-- Bootstrap CSS v5.3.3 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -41,9 +40,12 @@
     @include('partials.cowapp-stitch-theme')
 </head>
 <body>
-    <div class="auth-card">
+    <main class="auth-card">
+        <a href="{{ route('home') }}" class="d-block text-center mb-3" aria-label="CowApp, ir al inicio">
+            @include('partials.cowapp-logo', ['logoSize' => 150])
+        </a>
         <div class="text-start mb-4">
-            <h4 class="brand-title mb-1">Crear cuenta</h4>
+            <h1 class="h4 brand-title mb-1">Crear cuenta</h1>
             <p class="text-muted small mb-0">Complete los siguientes datos para registrarse en el sistema.</p>
         </div>
 
@@ -72,6 +74,8 @@
                     name="name"
                     value="{{ old('name') }}"
                     placeholder="Ej. Juan Pérez"
+                    maxlength="255"
+                    autocomplete="name"
                     required
                     autofocus
                 >
@@ -86,6 +90,8 @@
                     name="email"
                     value="{{ old('email') }}"
                     placeholder="ejemplo@dominio.com"
+                    maxlength="255"
+                    autocomplete="email"
                     required
                 >
             </div>
@@ -99,9 +105,11 @@
                         id="password"
                         name="password"
                         placeholder="Mínimo 8 caracteres"
+                        minlength="8"
+                        autocomplete="new-password"
                         required
                     >
-                    <button class="btn btn-outline-secondary btn-toggle-password" type="button" id="toggleRegPasswordBtn">
+                    <button class="btn btn-outline-secondary btn-toggle-password" type="button" id="toggleRegPasswordBtn" aria-controls="password" aria-pressed="false">
                         Mostrar
                     </button>
                 </div>
@@ -118,6 +126,8 @@
                     id="password_confirmation"
                     name="password_confirmation"
                     placeholder="Repita su contraseña"
+                    minlength="8"
+                    autocomplete="new-password"
                     required
                 >
             </div>
@@ -134,7 +144,7 @@
                 ¿Ya tienes una cuenta? <a href="{{ route('login') }}" class="text-decoration-none fw-semibold">Inicia sesión</a>
             </p>
         </div>
-    </div>
+    </main>
 
     <!-- Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -147,6 +157,7 @@
                 const isPassword = regPasswordInput.getAttribute('type') === 'password';
                 regPasswordInput.setAttribute('type', isPassword ? 'text' : 'password');
                 toggleRegBtn.textContent = isPassword ? 'Ocultar' : 'Mostrar';
+                toggleRegBtn.setAttribute('aria-pressed', String(isPassword));
             });
         }
     </script>

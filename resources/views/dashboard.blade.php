@@ -11,7 +11,6 @@
         body{background:#F1F1F1;color:#020219;min-height:100vh}
         .panel-sidebar{width:250px;position:fixed;inset:0 auto 0 0;overflow-y:auto;background:#fff;border-right:1px solid #E2E4E8;padding:1.25rem}
         .panel-brand{display:flex;align-items:center;gap:.75rem;color:#020219;text-decoration:none;font-size:1.4rem;font-weight:800;margin-bottom:1.5rem}
-        .panel-brand span:first-child{display:grid;place-items:center;width:44px;height:44px;background:#0C820C;color:white;border-radius:12px}
         .panel-nav{display:grid;gap:.3rem}.panel-nav a{display:flex;align-items:center;gap:.7rem;padding:.7rem;border-radius:10px;color:#4C4639;text-decoration:none;font-weight:600;font-size:.9rem}
         .panel-nav a:hover,.panel-nav a[aria-current]{background:#E6F4E6;color:#0C820C}
         .panel-caption{font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:#6B7280;margin:1.25rem .7rem .5rem;font-weight:700}
@@ -26,7 +25,7 @@
 <body>
 <a class="visually-hidden-focusable" href="#panel-content">Ir al contenido</a>
 <aside class="panel-sidebar" aria-label="Navegación principal">
-    <a class="panel-brand" href="{{ route('dashboard') }}"><span><i class="bi bi-grid" aria-hidden="true"></i></span><span>CowApp<small class="d-block text-secondary" style="font-size:.65rem;letter-spacing:.1em">CRM GANADERO</small></span></a>
+    <a class="panel-brand" href="{{ route('dashboard') }}">@include('partials.cowapp-logo', ['logoSize' => 80])<span><small class="d-block text-secondary" style="font-size:.65rem;letter-spacing:.1em">CRM GANADERO</small></span></a>
     <nav class="panel-nav" aria-label="Gestión comercial">
         <a href="{{ route('dashboard') }}" aria-current="page"><i class="bi bi-grid" aria-hidden="true"></i>Panel</a>
         @can('permission', 'clients.manage')<a href="{{ route('admin.clients.index') }}"><i class="bi bi-people" aria-hidden="true"></i>Clientes</a>@endcan

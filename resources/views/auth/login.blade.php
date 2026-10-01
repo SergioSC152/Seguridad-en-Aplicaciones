@@ -256,10 +256,7 @@
             <div class="col-lg-5 cow-hero-sidebar">
                 <div class="cow-brand-header">
                     <div class="d-flex align-items-center gap-3 mb-4">
-                        <div class="cow-logo-badge">
-                            <!-- Ícono de Ganado / Toro AgroTech -->
-                            <i class="bi bi-tag-fill"></i>
-                        </div>
+                        @include('partials.cowapp-logo', ['logoSize' => 88])
                         <div>
                             <h3 class="fw-bold text-white mb-0" style="letter-spacing: -0.5px;">Cow App</h3>
                             <span class="badge bg-white text-success fw-bold px-2 py-1" style="font-size: 0.72rem; letter-spacing: 0.5px;">CRM GANADERO</span>

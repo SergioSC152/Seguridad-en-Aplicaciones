@@ -43,7 +43,7 @@
 <body>
 <nav class="navbar navbar-expand-lg portal-nav sticky-top py-3">
     <div class="container">
-        <a class="navbar-brand d-flex align-items-center gap-2 fw-bold text-dark" href="{{ route('home') }}"><span class="brand-mark"><i class="bi bi-tree-fill"></i></span><span class="fs-5">CowApp</span><span class="badge rounded-pill bg-success-subtle text-success border border-success-subtle">CRM Ganadero</span></a>
+        <a class="navbar-brand d-flex align-items-center gap-2 fw-bold text-dark" href="{{ route('home') }}">@include('partials.cowapp-logo', ['logoSize' => 72])<span class="badge rounded-pill bg-success-subtle text-success border border-success-subtle">CRM Ganadero</span></a>
         <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#portalNav" aria-controls="portalNav" aria-expanded="false" aria-label="Abrir menú"><span class="navbar-toggler-icon"></span></button>
         <div class="collapse navbar-collapse" id="portalNav">
             <ul class="navbar-nav mx-auto gap-lg-2 py-3 py-lg-0"><li class="nav-item"><a class="nav-link portal-link active" href="#inicio">Inicio</a></li><li class="nav-item"><a class="nav-link portal-link" href="#servicios">Plataforma</a></li><li class="nav-item"><a class="nav-link portal-link" href="#publicaciones">Actualidad</a></li><li class="nav-item"><a class="nav-link portal-link" href="#contacto">Contacto</a></li></ul>

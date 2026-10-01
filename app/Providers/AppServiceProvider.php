@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Media;
 use App\Models\User;
 use App\Services\MailSettingsService;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -9,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 
@@ -33,6 +35,15 @@ class AppServiceProvider extends ServiceProvider
         }
 
         Gate::define('permission', fn (User $user, string $permission): bool => $user->hasPermissionTo($permission));
+
+        View::composer('partials.cowapp-logo', function (\Illuminate\View\View $view): void {
+            $logo = Schema::hasTable('media')
+                ? Media::query()->where('name', Media::COWAPP_LOGO_NAME)->where('active', true)->first()
+                : null;
+
+            // Una URL relativa conserva el host y puerto de la sesión actual.
+            $view->with('cowappLogoUrl', $logo?->url);
+        });
 
         RateLimiter::for('login', function (Request $request) {
             $email = Str::lower((string) $request->input('email'));

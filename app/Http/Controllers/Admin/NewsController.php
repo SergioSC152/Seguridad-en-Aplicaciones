@@ -45,6 +45,7 @@ class NewsController extends Controller
             $media = Media::create([
                 'name' => $validated['title'],
                 'path' => $path,
+                'url' => '/storage/'.$path,
                 'mime_type' => $file->getMimeType(),
                 'size' => $file->getSize(),
             ]);
@@ -95,6 +96,7 @@ class NewsController extends Controller
                 $path = $request->file('file')->store('media', 'public');
                 $news->media->update([
                     'path' => $path,
+                    'url' => '/storage/'.$path,
                     'mime_type' => $request->file('file')->getMimeType(),
                     'size' => $request->file('file')->getSize(),
                 ]);
@@ -104,6 +106,7 @@ class NewsController extends Controller
                 $media = Media::create([
                     'name' => $news->title,
                     'path' => $path,
+                    'url' => '/storage/'.$path,
                     'mime_type' => $file->getMimeType(),
                     'size' => $file->getSize(),
                 ]);

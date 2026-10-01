@@ -39,6 +39,7 @@ class MediaController extends Controller
         Media::create([
             'name' => $validated['name'],
             'path' => $path,
+            'url' => '/storage/'.$path,
             'mime_type' => $file->getMimeType(),
             'size' => $file->getSize(),
             'active' => true,
@@ -76,6 +77,7 @@ class MediaController extends Controller
             $path = $file->store('media', 'public');
 
             $media->path = $path;
+            $media->url = '/storage/'.$path;
             $media->mime_type = $file->getMimeType();
             $media->size = $file->getSize();
         }

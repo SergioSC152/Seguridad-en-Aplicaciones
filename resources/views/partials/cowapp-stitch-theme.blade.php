@@ -113,3 +113,4 @@
     .form-select:focus { border-color: #0C820C; box-shadow: 0 0 0 .2rem rgba(12, 130, 12, .18); }
 </style>
 @include('partials.session-history')
+@include('partials.text-limits')

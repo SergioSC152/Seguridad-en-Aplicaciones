@@ -1,0 +1,7 @@
+@extends('layouts.workspace')
+@section('title','Bandeja WhatsApp Cloud API')
+@section('content')
+@if(!$configured)<div class="alert alert-warning">Conexión pendiente: configura credenciales oficiales Meta y un webhook HTTPS público. No se simulan mensajes recibidos o enviados.</div>@endif
+<section class="card p-4 mb-4"><h2 class="h5">Responder a un prospecto</h2><p class="small text-secondary">Respuesta de texto dentro de la ventana permitida por Meta. Fuera de ella se necesita una plantilla aprobada; este formulario no la sustituye.</p><form method="POST" action="{{ route('admin.whatsapp.send') }}">@csrf<select class="form-select mb-3" name="lead_id" aria-label="Prospecto">@foreach($leads as $lead)<option value="{{ $lead->id }}">{{ $lead->name }} · {{ $lead->phone }}</option>@endforeach</select><textarea class="form-control" name="message" maxlength="4096" rows="3" required aria-label="Mensaje"></textarea><button class="btn btn-success mt-3" @disabled(!$configured)>Enviar por WhatsApp</button></form></section>
+<section class="card p-4">@forelse($messages as $message)<article class="border-bottom py-3"><strong>{{ $message->direction==='in'?'Recibido':'Enviado' }} · {{ $message->phone }}</strong><p style="white-space:pre-wrap">{{ $message->body }}</p><small class="text-secondary">{{ $message->created_at }} UTC · {{ $message->status }}</small></article>@empty<p>No hay mensajes.</p>@endforelse{{ $messages->links('pagination::bootstrap-5') }}</section>
+@endsection

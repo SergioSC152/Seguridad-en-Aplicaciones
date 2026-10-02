@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RegisterUserRequest;
 use App\Models\User;
+use App\Services\LoginProtectionService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -18,20 +19,38 @@ class LoginController extends Controller
         return view('auth.login');
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request, LoginProtectionService $protection): RedirectResponse
     {
         $credentials = $request->validate([
             'email' => ['required', 'email', 'max:255'],
             'password' => ['required', 'string'],
         ]);
 
+        $credentials['email'] = mb_strtolower(trim($credentials['email']));
+        if ($protection->blocked($credentials['email'])) {
+            return back()->withErrors(['email' => 'Acceso bloqueado por intentos fallidos. Intenta en '.$protection->seconds($credentials['email']).' segundos o recupera tu contraseña.'])->onlyInput('email');
+        }
+
         if (! Auth::attempt($credentials, $request->boolean('remember'))) {
+            $protection->failed($credentials['email']);
             return back()
                 ->withErrors([
-                    'email' => 'Las credenciales proporcionadas no son válidas.',
+                    'email' => $protection->blocked($credentials['email']) ? 'Cinco contraseñas incorrectas: acceso bloqueado temporalmente por correo. Puedes recuperar tu contraseña.' : 'Las credenciales proporcionadas no son válidas.',
                 ])
                 ->onlyInput('email');
         }
+
+        $protection->clear($credentials['email']);
+
+        $user=Auth::user();
+        if ($user->mfa_enabled) {
+            Auth::logout();
+            $request->session()->regenerate();
+            try { app(\App\Services\LoginMfaService::class)->start($request,$user,false); }
+            catch (\Throwable) { return back()->withErrors(['email'=>'No se pudo enviar el código MFA. El acceso sigue cerrado. Revisa SMTP.'])->onlyInput('email'); }
+            return to_route('mfa.show');
+        }
+        app(\App\Services\SecurityAuditService::class)->record('login.success','info',$user->id,200);
 
         $request->session()->regenerate();
 

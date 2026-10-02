@@ -36,6 +36,7 @@ class Lead extends Model
         'estimated_heads',
         'follow_up_at',
         'notes',
+        'hectares','carrying_capacity','budget','purpose','converted_client_id','converted_opportunity_id',
     ];
 
     protected function casts(): array
@@ -49,5 +50,12 @@ class Lead extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+    public function score(): string
+    {
+        if ($this->hectares === null || $this->carrying_capacity === null || $this->budget === null || !$this->purpose) return 'Sin datos';
+        $capacity=(float)$this->hectares*(float)$this->carrying_capacity;
+        if ($capacity>=50 && (float)$this->budget>=50000000) return 'A1';
+        return $capacity>=10 && (float)$this->budget>=10000000 ? 'B1' : 'B2';
     }
 }

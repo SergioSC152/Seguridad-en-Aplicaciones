@@ -45,7 +45,7 @@ php artisan test --filter=MailSettingsTest
 php artisan test --filter=PasswordRecoveryOtpTest
 ```
 
-No ejecutados automáticamente. Los tests de imágenes usan Storage simulado y SQLite en memoria; `UploadedFile::fake()->image()` necesita GD disponible en PHP. No representan entrega SMTP real. No se requiere compilación por estos cambios Blade/config. Si `public/storage` ya existe y el logo carga, conservar el enlace; únicamente si falta ejecutar `php artisan storage:link`.
+No ejecutados automáticamente. Los tests de imágenes usan Storage simulado y SQLite en memoria. Tras el error GD informado, se ajustaron para usar el PNG existente sin generar imágenes con GD; ver `correccion-tests-gd-correo-terminal.md`. No representan entrega SMTP real. No se requiere compilación por estos cambios Blade/config. Si `public/storage` ya existe y el logo carga, conservar el enlace; únicamente si falta ejecutar `php artisan storage:link`.
 
 Referencia oficial: [Storage público](https://laravel.com/docs/12.x/filesystem#the-public-disk) y [validación de imágenes](https://laravel.com/docs/12.x/validation#rule-image).
 

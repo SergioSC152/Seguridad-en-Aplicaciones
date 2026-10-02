@@ -24,6 +24,7 @@ class Client extends Model
         'address',
         'status',
         'notes',
+        'ica_registration', 'credit_limit', 'vip',
     ];
 
     public function user(): BelongsTo
@@ -35,4 +36,8 @@ class Client extends Model
     {
         return $this->hasMany(SalesOpportunity::class);
     }
+    public function sales(): HasMany { return $this->hasMany(Sale::class); }
+    public function quotes(): HasMany { return $this->hasMany(Quote::class); }
+    public function documents(): HasMany { return $this->hasMany(ClientDocument::class); }
+    protected function casts(): array { return ['credit_limit'=>'decimal:2','vip'=>'boolean']; }
 }

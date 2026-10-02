@@ -83,6 +83,7 @@ class LivestockBatchService
 
             DB::transaction(function () use ($batch, $data) {
                 $batch->update($this->resolveCategory($batch->user, $data));
+                if(array_key_exists('average_weight_kg',$data) && $data['average_weight_kg'] !== null) \App\Models\LivestockMeasurement::create(['user_id'=>$batch->user_id,'livestock_batch_id'=>$batch->id,'average_weight_kg'=>$data['average_weight_kg'],'rfid'=>$batch->rfid,'source'=>'manual']);
             });
         } catch (Throwable $exception) {
             if ($newPath) {
@@ -100,6 +101,8 @@ class LivestockBatchService
 
     public function delete(LivestockBatch $batch): void
     {
+        if (\App\Models\Quote::where('livestock_batch_id',$batch->id)->where('status','accepted')->exists()) throw ValidationException::withMessages(['batch'=>'El lote tiene contratos aceptados; conserva su historial e inactívalo.']);
+        if (\App\Models\Auction::where('livestock_batch_id',$batch->id)->exists()) throw ValidationException::withMessages(['batch'=>'El lote tiene remates asociados; puedes inactivarlo.']);
         $path = $batch->image_path;
         DB::transaction(fn () => $batch->delete());
         if ($path) {

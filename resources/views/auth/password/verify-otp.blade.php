@@ -13,7 +13,20 @@
     <p class="text-success text-uppercase small fw-bold mb-1">Paso 2 de 3</p><h1 class="h3 fw-bold text-dark">Ingresa tu código OTP</h1><p class="text-secondary">Si el correo está registrado, enviamos un código a <strong>{{ $maskedEmail }}</strong>. Vence en 10 minutos.</p>
     @if(session('status'))<div class="alert alert-info" role="status">{{ session('status') }}</div>@endif
     @if($errors->any())<div class="alert alert-danger" role="alert">@foreach($errors->all() as $error)<div>{{ $error }}</div>@endforeach</div>@endif
-    <form method="POST" action="{{ route('password.otp.verify') }}">@csrf<label for="code" class="form-label fw-semibold">Código de 6 dígitos</label><input type="text" inputmode="numeric" pattern="[0-9]{6}" id="code" name="code" class="form-control @error('code') is-invalid @enderror" minlength="6" maxlength="6" autocomplete="one-time-code" required autofocus aria-describedby="code-help"><div id="code-help" class="form-text mb-4">Después de 5 intentos tendrás que solicitar un código nuevo.</div><button type="submit" class="btn btn-success w-100 py-2 fw-semibold">Verificar código</button></form>
+    <form method="POST" action="{{ route('password.otp.verify') }}">@csrf@include('partials.otp-fields')<div id="code-help" class="form-text mb-4">Después de 5 intentos tendrás que solicitar un código nuevo.</div><button type="submit" class="btn btn-success w-100 py-2 fw-semibold">Verificar código</button></form>
     <form method="POST" action="{{ route('password.otp.resend') }}" class="mt-3">@csrf<button type="submit" class="btn btn-outline-success w-100">Solicitar otro código</button></form>
     <div class="text-center mt-4"><a href="{{ route('password.request') }}" class="text-success fw-semibold text-decoration-none">Usar otro correo</a></div>
-</main></body></html>
+    <p class="small text-secondary mt-3" role="timer" id="otp-time">Tiempo disponible para verificar el último código.</p>
+</main>
+<script>
+    const expires = @json($expiresAt ?? null);
+    const started = Date.now();
+    const serverNow = @json($serverNow ?? null);
+    function updateOtpTime() {
+        if (!expires || !serverNow) return;
+        const seconds = Math.max(0, Math.floor(expires - serverNow - (Date.now() - started) / 1000));
+        document.getElementById('otp-time').textContent = seconds > 0 ? 'Tiempo restante: ' + Math.floor(seconds / 60) + ':' + String(seconds % 60).padStart(2, '0') : 'El tiempo terminó. Solicita un código nuevo.';
+    }
+    updateOtpTime(); setInterval(updateOtpTime, 1000);
+</script>
+</body></html>

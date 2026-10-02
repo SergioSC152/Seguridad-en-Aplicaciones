@@ -53,4 +53,16 @@ class LeadService
     {
         DB::transaction(fn () => $lead->delete());
     }
+    public function convert(Lead $lead): \App\Models\SalesOpportunity
+    {
+        return DB::transaction(function () use ($lead) {
+            $lead=Lead::whereKey($lead->id)->lockForUpdate()->firstOrFail();
+            if ($lead->converted_opportunity_id) return \App\Models\SalesOpportunity::findOrFail($lead->converted_opportunity_id);
+            $client=$lead->email ? $lead->user->clients()->where('email',$lead->email)->first() : null;
+            $client ??= $lead->user->clients()->create(['name'=>$lead->name,'client_type'=>'individual','email'=>$lead->email,'phone'=>$lead->phone,'municipality'=>$lead->municipality,'department'=>$lead->department,'status'=>'active']);
+            $opportunity=$lead->user->salesOpportunities()->create(['client_id'=>$client->id,'title'=>'Negocio: '.$lead->name,'livestock_summary'=>$lead->livestock_interest,'head_count'=>$lead->estimated_heads,'estimated_value'=>$lead->budget ?? 0,'stage'=>'contact']);
+            $lead->update(['converted_client_id'=>$client->id,'converted_opportunity_id'=>$opportunity->id,'status'=>'qualified']);
+            return $opportunity;
+        });
+    }
 }

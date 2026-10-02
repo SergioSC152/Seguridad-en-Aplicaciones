@@ -13,6 +13,7 @@ class PublicPortalController extends Controller
     {
         return view('welcome', [
             'publishedNews' => $this->portal->latestPublications(),
+            'portalBlocks'=>\App\Models\PortalBlock::where('published',true)->with('media')->orderBy('position')->get(),
         ]);
     }
 }

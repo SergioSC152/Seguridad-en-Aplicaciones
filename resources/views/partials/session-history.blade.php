@@ -1,4 +1,3 @@
-@auth
     <script>
         // Un documento restaurado del historial debe volver a comprobar la sesión en el servidor.
         window.addEventListener('pagehide', function () {
@@ -13,4 +12,3 @@
             document.documentElement.style.visibility = '';
         });
     </script>
-@endauth

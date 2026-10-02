@@ -24,6 +24,7 @@ class LivestockBatch extends Model
         'notes',
         'image_path',
         'image_url',
+        'purpose','availability','published','price_per_kg','rfid',
     ];
 
     protected function casts(): array
@@ -31,6 +32,7 @@ class LivestockBatch extends Model
         return [
             'head_count' => 'integer',
             'average_weight_kg' => 'decimal:2',
+            'published'=>'boolean','price_per_kg'=>'decimal:2',
         ];
     }
 

@@ -4,7 +4,7 @@ Fecha: 1 de octubre de 2026. Alcance: CRM web Laravel; el aplicativo móvil es u
 
 ## Reglas de trabajo
 
-- Un módulo a la vez. Después de cada fase se entregan pruebas y se espera confirmación del responsable.
+- Actualización autorizada el 1 de octubre de 2026: elaborar los módulos pendientes en una fase unificada. La validación y sus evidencias siguen siendo obligatorias antes de publicar. Ver [fase unificada](fase-unificada-cowapp.md).
 - Revisar primero estructura, versión, archivos y componentes reutilizables. Mantener Laravel 12 y la interfaz Bootstrap existente mientras no se acuerde una migración visual.
 - Conservar las funciones que trabajan correctamente. No crear capas, paquetes ni funcionalidades futuras sin necesidad.
 - El responsable ejecuta comandos de Artisan, compilación, migraciones y tests; guardar sus resultados reales.

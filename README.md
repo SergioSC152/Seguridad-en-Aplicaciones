@@ -1,3 +1,13 @@
+# CowApp — CRM ganadero
+
+Aplicación Laravel 12, MySQL y Blade para clientes, leads, lotes, cotizaciones, ventas, remates, contenidos y seguridad. El aplicativo móvil es independiente.
+
+Estado: elaboración unificada preparada; migraciones y validación local pendientes. Consulta [instrucciones, comandos, límites y evidencias](docs/fase-unificada-cowapp.md), [inventario de cambios](docs/inventario-fase-unificada.md) y [plan de fases](docs/fases-desarrollo-crm.md).
+
+Configura `.env` localmente a partir de `.env.example`. Nunca publiques credenciales, APP_KEY, códigos OTP ni archivos privados de clientes. Las conexiones externas requieren credenciales propias.
+
+---
+
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">

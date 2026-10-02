@@ -26,6 +26,11 @@ class StoreLivestockBatchRequest extends FormRequest
             'paddock' => ['nullable', 'string', 'max:100'],
             'status' => ['required', Rule::in(LivestockBatch::STATUSES)],
             'notes' => ['nullable', 'string', 'max:5000'],
+            'purpose'=>['sometimes',Rule::in(['cria','ceba','leche','genetica'])],
+            'availability'=>['sometimes',Rule::in(['available','auction','bidding','reserved','awarded'])],
+            'published'=>['sometimes','boolean'],
+            'price_per_kg'=>['nullable','numeric','between:0,1000000'],
+            'rfid'=>['nullable','string','max:100'],
             'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120', 'dimensions:max_width=6000,max_height=6000'],
         ];
     }

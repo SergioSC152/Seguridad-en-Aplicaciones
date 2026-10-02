@@ -38,7 +38,7 @@ class LivestockBatchImageTest extends TestCase
         $category = $user->livestockCategories()->create(['name' => 'Angus', 'active' => true]);
         $data = ['livestock_category_id' => $category->id, 'code' => 'PHOTO', 'head_count' => 3, 'status' => 'active'];
         $this->actingAs($user)->post(route('admin.livestock-batches.store'), $data + [
-            'image' => UploadedFile::fake()->image('first.png'),
+            'image' => $this->imageFile('first.png'),
         ])->assertSessionHasNoErrors();
         $batch = $user->livestockBatches()->firstOrFail();
         $firstPath = $batch->image_path;
@@ -47,7 +47,7 @@ class LivestockBatchImageTest extends TestCase
         $this->get(route('admin.livestock-batches.index'))->assertOk()->assertSee($batch->image_url);
 
         $this->put(route('admin.livestock-batches.update', $batch), $data + [
-            'image' => UploadedFile::fake()->image('second.jpg'),
+            'image' => $this->imageFile('second.png'),
         ])->assertSessionHasNoErrors();
         $secondPath = $batch->refresh()->image_path;
         Storage::disk('public')->assertMissing($firstPath);
@@ -60,7 +60,7 @@ class LivestockBatchImageTest extends TestCase
         $this->assertNull($batch->refresh()->image_url);
 
         $this->put(route('admin.livestock-batches.update', $batch), $data + [
-            'image' => UploadedFile::fake()->image('third.png'),
+            'image' => $this->imageFile('third.png'),
         ])->assertSessionHasNoErrors();
         $thirdPath = $batch->refresh()->image_path;
         $this->delete(route('admin.livestock-batches.destroy', $batch))->assertRedirect();
@@ -75,7 +75,7 @@ class LivestockBatchImageTest extends TestCase
         $data = ['new_category_name' => 'Jersey', 'code' => 'INVALID', 'head_count' => 1, 'status' => 'active'];
         $files = [
             UploadedFile::fake()->createWithContent('fake.jpg', '<?php echo "not an image";'),
-            UploadedFile::fake()->image('large.png')->size(5121),
+            $this->imageFile('large.png')->size(5121),
             UploadedFile::fake()->createWithContent('vector.svg', '<svg xmlns="http://www.w3.org/2000/svg"><script>alert(1)</script></svg>'),
         ];
         foreach ($files as $file) {
@@ -94,15 +94,23 @@ class LivestockBatchImageTest extends TestCase
         $other = User::factory()->create();
         $this->actingAs($owner)->post(route('admin.livestock-batches.store'), [
             'new_category_name' => 'Holstein', 'code' => 'OWNED', 'head_count' => 1,
-            'status' => 'active', 'image' => UploadedFile::fake()->image('owned.png'),
+            'status' => 'active', 'image' => $this->imageFile('owned.png'),
         ])->assertSessionHasNoErrors();
         $batch = $owner->livestockBatches()->firstOrFail();
         $path = $batch->image_path;
         $this->actingAs($other)->put(route('admin.livestock-batches.update', $batch), [
-            'remove_image' => '1', 'image' => UploadedFile::fake()->image('foreign.png'),
+            'remove_image' => '1', 'image' => $this->imageFile('foreign.png'),
         ])->assertForbidden();
         $this->delete(route('admin.livestock-batches.destroy', $batch))->assertForbidden();
         Storage::disk('public')->assertExists($path);
         $this->assertSame($path, $batch->refresh()->image_path);
+    }
+
+    private function imageFile(string $name): \Illuminate\Http\Testing\File
+    {
+        $path = resource_path('branding/cowapp-logo.png');
+        $this->assertFileExists($path);
+
+        return UploadedFile::fake()->createWithContent($name, file_get_contents($path));
     }
 }

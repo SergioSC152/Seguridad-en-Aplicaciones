@@ -22,14 +22,23 @@ use Illuminate\Support\Facades\Route;
 | Rutas Públicas
 |--------------------------------------------------------------------------
 */
-Route::get('/', PublicPortalController::class)->name('home');
+Route::get('/', PublicPortalController::class)->middleware([\App\Http\Middleware\CloseSessionOnPublicPage::class,'no-cache'])->name('home');
+Route::get('/catalogo',[\App\Http\Controllers\CatalogController::class,'index'])->middleware([\App\Http\Middleware\CloseSessionOnPublicPage::class,'no-cache'])->name('catalog.index');
+Route::post('/catalogo/solicitud',[\App\Http\Controllers\CatalogController::class,'capture'])->middleware('throttle:6,1')->name('catalog.capture');
+Route::middleware(['no-cache','throttle:10,1'])->prefix('contratos/{token}')->name('contracts.')->group(function () {
+    Route::get('/',[\App\Http\Controllers\ContractController::class,'show'])->name('show');
+    Route::post('/codigo',[\App\Http\Controllers\ContractController::class,'code'])->middleware('throttle:3,15')->name('code');
+    Route::post('/aceptar',[\App\Http\Controllers\ContractController::class,'accept'])->name('accept');
+});
 
 // Módulo de Contacto y Envío de Correo SMTP (Pasos 6.5, 6.8)
-Route::get('/contacto', [ContactController::class, 'show'])->name('contact.show');
+Route::get('/contacto', [ContactController::class, 'show'])->middleware([\App\Http\Middleware\CloseSessionOnPublicPage::class,'no-cache'])->name('contact.show');
 Route::post('/contacto', [ContactController::class, 'send'])->name('contact.send');
 
 // Rutas de Autenticación
 Route::middleware(['guest', 'no-cache'])->group(function () {
+    Route::get('/login/mfa',[\App\Http\Controllers\Auth\MfaController::class,'show'])->name('mfa.show');
+    Route::post('/login/mfa',[\App\Http\Controllers\Auth\MfaController::class,'verify'])->middleware('throttle:10,1')->name('mfa.verify');
     Route::get('/forgot-password', [PasswordRecoveryController::class, 'requestForm'])
         ->name('password.request');
     Route::post('/forgot-password', [PasswordRecoveryController::class, 'send'])
@@ -52,7 +61,7 @@ Route::middleware(['guest', 'no-cache'])->group(function () {
         ->name('login');
 
     Route::post('/login', [LoginController::class, 'store'])
-        ->middleware('throttle:login')
+        ->middleware('throttle:login-burst')
         ->name('login.store');
 
     Route::get('/register', [LoginController::class, 'createRegister'])
@@ -67,7 +76,7 @@ Route::middleware(['guest', 'no-cache'])->group(function () {
 | Rutas Protegidas (Panel Administrativo CRM / CMS)
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth', 'no-cache'])->group(function () {
+Route::middleware(['auth', 'no-cache','audit-workspace'])->group(function () {
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
 
     Route::post('/logout', [LoginController::class, 'destroy'])
@@ -75,6 +84,31 @@ Route::middleware(['auth', 'no-cache'])->group(function () {
 
     // Módulo Biblioteca Multimedia (Reto A / Pasos 5.4, 5.5, 5.7, 5.13)
     Route::prefix('admin')->name('admin.')->group(function () {
+        Route::get('indicadores',[\App\Http\Controllers\Admin\InsightsController::class,'index'])->name('insights.index');
+        Route::get('whatsapp',[\App\Http\Controllers\Admin\WhatsappController::class,'index'])->name('whatsapp.index');
+        Route::post('whatsapp',[\App\Http\Controllers\Admin\WhatsappController::class,'send'])->middleware('throttle:10,1')->name('whatsapp.send');
+        Route::resource('productos',\App\Http\Controllers\Admin\ProductController::class)->parameters(['productos'=>'product'])->names('products')->only(['index','store','edit','update','destroy']);
+        Route::resource('actividades',\App\Http\Controllers\Admin\ActivityController::class)->parameters(['actividades'=>'activity'])->names('activities')->only(['index','store','edit','update','destroy']);
+        Route::resource('portal',\App\Http\Controllers\Admin\PortalBlockController::class)->parameters(['portal'=>'block'])->names('portal-blocks')->only(['index','store','edit','update','destroy']);
+        Route::resource('cotizaciones',\App\Http\Controllers\Admin\QuoteController::class)->parameters(['cotizaciones'=>'quote'])->names('quotes')->only(['index','store','edit','update','destroy']);
+        Route::post('cotizaciones/{quote}/enviar',[\App\Http\Controllers\Admin\QuoteController::class,'send'])->middleware('throttle:5,1')->name('quotes.send');
+        Route::post('cotizaciones/{quote}/venta',[\App\Http\Controllers\Admin\QuoteController::class,'sell'])->name('quotes.sell');
+        Route::get('ventas',[\App\Http\Controllers\Admin\SaleController::class,'index'])->name('sales.index');
+        Route::put('ventas/{sale}',[\App\Http\Controllers\Admin\SaleController::class,'update'])->name('sales.update');
+        Route::get('remates',[\App\Http\Controllers\Admin\AuctionController::class,'index'])->name('auctions.index');
+        Route::get('remates/resumen',[\App\Http\Controllers\Admin\AuctionController::class,'snapshot'])->name('auctions.snapshot');
+        Route::post('remates',[\App\Http\Controllers\Admin\AuctionController::class,'store'])->name('auctions.store');
+        foreach(['open'=>'abrir','bid'=>'puja','close'=>'cerrar'] as $action=>$url) Route::post('remates/{auction}/'.$url,[\App\Http\Controllers\Admin\AuctionController::class,$action])->name('auctions.'.$action);
+        Route::get('clientes/{client}/ficha',[\App\Http\Controllers\Admin\ClientProfileController::class,'show'])->name('clients.profile');
+        Route::post('clientes/{client}/documentos',[\App\Http\Controllers\Admin\ClientProfileController::class,'store'])->name('client-documents.store');
+        Route::get('documentos/{document}/descargar',[\App\Http\Controllers\Admin\ClientProfileController::class,'download'])->name('client-documents.download');
+        Route::put('documentos/{document}',[\App\Http\Controllers\Admin\ClientProfileController::class,'review'])->name('client-documents.review');
+        Route::delete('documentos/{document}',[\App\Http\Controllers\Admin\ClientProfileController::class,'destroy'])->name('client-documents.destroy');
+        Route::post('leads/{lead}/convertir',[LeadController::class,'convert'])->name('leads.convert');
+        Route::get('seguridad',[\App\Http\Controllers\Admin\SecurityController::class,'index'])->name('security.index');
+        Route::get('seguridad/eventos',[\App\Http\Controllers\Admin\SecurityController::class,'snapshot'])->name('security.snapshot');
+        Route::get('mi-seguridad',[\App\Http\Controllers\Admin\SecurityController::class,'account'])->name('security.account');
+        Route::put('mi-seguridad',[\App\Http\Controllers\Admin\SecurityController::class,'update'])->middleware('throttle:5,1')->name('security.account.update');
         Route::resource('lotes', LivestockBatchController::class)
             ->parameters(['lotes' => 'batch'])
             ->names('livestock-batches')

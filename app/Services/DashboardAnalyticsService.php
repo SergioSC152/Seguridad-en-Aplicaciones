@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\LivestockBatch;
 use App\Models\LivestockCategory;
 use App\Models\User;
+use App\Models\SalesOpportunity;
 
 class DashboardAnalyticsService
 {
@@ -56,8 +57,8 @@ class DashboardAnalyticsService
                 'clients' => $canManageClients ? $user->clients()->count() : null,
                 'leads' => $canManageLeads ? (clone $leads)->count() : null,
                 'new_leads' => $canManageLeads ? (clone $leads)->where('status', 'new')->count() : null,
-                'open_opportunities' => $canManageOpportunities ? (clone $opportunities)->whereIn('stage', ['contact', 'visit', 'negotiation'])->count() : null,
-                'open_pipeline_value' => $canManageOpportunities ? (float) (clone $opportunities)->whereIn('stage', ['contact', 'visit', 'negotiation'])->sum('estimated_value') : null,
+                'open_opportunities' => $canManageOpportunities ? (clone $opportunities)->whereIn('stage', SalesOpportunity::OPEN_STAGES)->count() : null,
+                'open_pipeline_value' => $canManageOpportunities ? (float) (clone $opportunities)->whereIn('stage', SalesOpportunity::OPEN_STAGES)->sum('estimated_value') : null,
                 'won_opportunities' => $canManageOpportunities ? (clone $opportunities)->where('stage', 'won')->count() : null,
             ],
             'categoryBreakdown' => $categoryBreakdown,

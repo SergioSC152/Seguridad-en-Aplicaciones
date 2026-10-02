@@ -51,6 +51,7 @@ class AppServiceProvider extends ServiceProvider
             return Limit::perMinute(5)
                 ->by($email.'|'.$request->ip());
         });
+        RateLimiter::for('login-burst', fn (Request $request) => Limit::perMinute(30)->by($request->ip()));
 
         RateLimiter::for('otp-send', function (Request $request) {
             $email = Str::lower((string) ($request->input('email') ?? $request->session()->get('password_reset_email')));

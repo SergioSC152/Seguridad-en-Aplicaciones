@@ -52,7 +52,7 @@ class ClientService
         return DB::transaction(function () use ($client): bool {
             $lockedClient = Client::query()->whereKey($client->id)->lockForUpdate()->firstOrFail();
 
-            if ($lockedClient->salesOpportunities()->exists()) {
+            if ($lockedClient->salesOpportunities()->exists() || $lockedClient->quotes()->exists() || $lockedClient->sales()->exists() || $lockedClient->documents()->exists() || \App\Models\AuctionBid::where('client_id',$lockedClient->id)->exists() || \App\Models\Auction::where('winner_client_id',$lockedClient->id)->exists()) {
                 return false;
             }
 

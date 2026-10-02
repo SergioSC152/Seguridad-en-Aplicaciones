@@ -37,6 +37,9 @@ class StoreClientRequest extends FormRequest
             'address' => ['nullable', 'string', 'max:255'],
             'status' => ['required', Rule::in(Client::STATUSES)],
             'notes' => ['nullable', 'string', 'max:3000'],
+            'ica_registration'=>['nullable','string','max:100'],
+            'credit_limit'=>['sometimes','numeric','between:0,100000000000'],
+            'vip'=>['sometimes','boolean'],
         ];
     }
 }

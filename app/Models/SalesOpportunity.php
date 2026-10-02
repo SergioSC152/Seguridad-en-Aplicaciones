@@ -8,14 +8,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class SalesOpportunity extends Model
 {
     public const STAGES = [
-        'contact' => 'Contacto',
-        'visit' => 'Visita / valoración',
-        'negotiation' => 'Negociación',
-        'won' => 'Ganada',
+        'contact' => 'Lead entrante',
+        'visit' => 'Visita y pesaje',
+        'negotiation' => 'Pre-puja / negociación',
+        'billing' => 'Facturación y guía ICA',
+        'won' => 'Despacho y ganada',
         'lost' => 'Perdida',
     ];
 
-    public const OPEN_STAGES = ['contact', 'visit', 'negotiation'];
+    public const OPEN_STAGES = ['contact', 'visit', 'negotiation', 'billing'];
 
     protected $fillable = [
         'client_id',

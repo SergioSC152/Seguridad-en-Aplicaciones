@@ -33,6 +33,7 @@
         @can('permission', 'sales-pipeline.manage')<a href="{{ route('admin.sales-pipeline.index') }}"><i class="bi bi-kanban" aria-hidden="true"></i>Oportunidades</a>@endcan
         <a href="{{ route('admin.livestock-batches.index') }}"><i class="bi bi-boxes" aria-hidden="true"></i>Lotes de ganado</a>
         <a href="{{ route('admin.livestock-categories.index') }}"><i class="bi bi-tags" aria-hidden="true"></i>Categorías</a>
+        @include('partials.workspace-links',['extendedOnly'=>true])
     </nav>
     @if($user->hasPermissionTo('content.manage') || $user->hasPermissionTo('mail-settings.manage') || $user->isPlatformAdmin())
         <div class="panel-caption">Administración</div>

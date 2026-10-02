@@ -17,6 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'no-cache' => PreventBrowserCache::class,
+            'audit-workspace'=>\App\Http\Middleware\AuditWorkspace::class,
             'permission' => EnsurePermission::class,
             'platform-admin' => EnsurePlatformAdmin::class,
         ]);

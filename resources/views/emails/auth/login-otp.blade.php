@@ -1,0 +1,1 @@
+<!doctype html><html lang="es"><body><h1>CowApp · Confirmación de acceso</h1><p>Código: <strong>{{ $code }}</strong></p><p>Válido durante diez minutos; cinco intentos como máximo. No compartas el código.</p></body></html>

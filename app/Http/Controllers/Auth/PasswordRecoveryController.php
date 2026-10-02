@@ -24,7 +24,8 @@ class PasswordRecoveryController extends Controller
     public function send(SendPasswordOtpRequest $request): RedirectResponse
     {
         $email = Str::lower(trim($request->validated('email')));
-        $this->recovery->sendCode($email);
+        $expires = $this->recovery->sendCode($email);
+        $request->session()->put('password_reset_expires', $expires);
         $request->session()->put('password_reset_email', $email);
 
         return to_route('password.otp.form')->with(
@@ -41,7 +42,7 @@ class PasswordRecoveryController extends Controller
             return to_route('password.request');
         }
 
-        return view('auth.password.verify-otp', ['maskedEmail' => $this->maskEmail($email)]);
+        return view('auth.password.verify-otp', ['maskedEmail' => $this->maskEmail($email), 'expiresAt' => $request->session()->get('password_reset_expires'), 'serverNow' => now()->timestamp]);
     }
 
     public function verify(VerifyPasswordOtpRequest $request): RedirectResponse
@@ -52,7 +53,7 @@ class PasswordRecoveryController extends Controller
         );
 
         if (! $user) {
-            return back()->withErrors(['code' => 'El código no es válido o ya venció. Solicita uno nuevo.']);
+            return back()->withErrors(['code' => 'No se pudo verificar. Usa el último código recibido; revisa el contador y el límite de cinco intentos.']);
         }
 
         $request->session()->regenerate();
@@ -70,7 +71,7 @@ class PasswordRecoveryController extends Controller
             return to_route('password.request');
         }
 
-        $this->recovery->sendCode($email);
+        $request->session()->put('password_reset_expires', $this->recovery->sendCode($email));
 
         return back()->with('status', 'Si el correo está registrado, enviaremos un nuevo código.');
     }

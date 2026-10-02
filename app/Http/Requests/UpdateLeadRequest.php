@@ -36,6 +36,10 @@ class UpdateLeadRequest extends FormRequest
             'estimated_heads' => ['nullable', 'integer', 'between:1,1000000'],
             'follow_up_at' => ['nullable', 'date'],
             'notes' => ['nullable', 'string', 'max:3000'],
+            'hectares'=>['nullable','numeric','between:0,1000000'],
+            'carrying_capacity'=>['nullable','numeric','between:0,1000'],
+            'budget'=>['nullable','numeric','between:0,100000000000'],
+            'purpose'=>['nullable',Rule::in(['cria','ceba','leche','genetica'])],
         ];
     }
 }

@@ -1,0 +1,11 @@
+@extends('layouts.workspace')
+@section('title','Eventos de seguridad y auditoría')
+@section('content')<p class="text-secondary">Registro de accesos, bloqueos y acciones de escritura. No contiene contraseñas, OTP ni cuerpos de solicitudes. La cuenta raíz consulta todos los eventos; otras cuentas solo los propios.</p><form class="mb-3"><select class="form-select" name="severity"><option value="">Todas las severidades</option>@foreach(['info','warning','critical'] as $s)<option value="{{ $s }}" @selected(request('severity')===$s)>{{ $s }}</option>@endforeach</select><button class="btn btn-outline-success mt-2">Filtrar</button><button type="button" class="btn btn-light mt-2" onclick="location.reload()">Actualizar eventos</button></form><div class="card table-responsive"><table class="table mb-0"><thead><tr><th>Fecha UTC</th><th>Evento</th><th>Severidad</th><th>IP</th><th>Ruta / HTTP</th></tr></thead><tbody id="security-events">@forelse($events as $event)<tr><td>{{ $event->created_at }}</td><td>{{ $event->event }}</td><td>{{ $event->severity }}</td><td>{{ $event->ip }}</td><td>{{ $event->route }} / {{ $event->http_status }}</td></tr>@empty<tr><td colspan="5" class="p-4">No hay eventos.</td></tr>@endforelse</tbody></table></div><div class="mt-3">{{ $events->links('pagination::bootstrap-5') }}</div>@endsection
+
+@push('scripts')
+<script>
+if(!new URLSearchParams(location.search).has('page')&&!new URLSearchParams(location.search).get('severity')) setInterval(async function(){
+try{const response=await fetch(@json(route('admin.security.snapshot')),{headers:{Accept:'application/json'}});if(!response.ok)return;const rows=await response.json();if(!rows.length)return;const table=document.getElementById('security-events');table.replaceChildren();for(const event of rows){const row=document.createElement('tr');for(const value of [event.created_at,event.event,event.severity,event.ip,(event.route||'')+' / '+event.http_status]){const cell=document.createElement('td');cell.textContent=value||'—';row.appendChild(cell);}table.appendChild(row);}}catch(e){}
+},10000);
+</script>
+@endpush

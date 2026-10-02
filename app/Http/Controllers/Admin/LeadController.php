@@ -52,6 +52,14 @@ class LeadController extends Controller
 
         return to_route('admin.leads.index')->with('success', 'Prospecto eliminado correctamente.');
     }
+    public function convert(Lead $lead): RedirectResponse
+    {
+        Gate::authorize('update',$lead);
+        Gate::authorize('permission','clients.manage');
+        Gate::authorize('permission','sales-pipeline.manage');
+        $opportunity=$this->leads->convert($lead);
+        return to_route('admin.sales-pipeline.edit',$opportunity)->with('success','Cliente y oportunidad vinculados al prospecto.');
+    }
 
     private function leadView(IndexLeadsRequest $request, ?Lead $editingLead): View
     {

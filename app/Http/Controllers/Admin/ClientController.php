@@ -57,6 +57,7 @@ class ClientController extends Controller
     {
         Gate::authorize('delete', $client);
         if (! $this->clients->delete($client)) {
+            if (!$client->salesOpportunities()->exists()) return to_route('admin.clients.index')->with('error','El cliente conserva cotizaciones, ventas, remates o documentos. Puedes inactivarlo.');
             return to_route('admin.clients.index')->with('error', 'No puedes eliminar un cliente con oportunidades asociadas. Puedes marcarlo como inactivo.');
         }
 

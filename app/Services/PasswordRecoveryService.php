@@ -18,13 +18,13 @@ class PasswordRecoveryService
 
     private const MAX_ATTEMPTS = 5;
 
-    public function sendCode(string $email): void
+    public function sendCode(string $email): int
     {
         $normalizedEmail = Str::lower(trim($email));
         $user = User::query()->whereRaw('LOWER(email) = ?', [$normalizedEmail])->first();
 
         if (! $user) {
-            return;
+            return now()->addMinutes(self::OTP_TTL_MINUTES)->timestamp;
         }
 
         $code = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
@@ -35,17 +35,25 @@ class PasswordRecoveryService
                 'code_hash' => Hash::make($code),
                 'attempts' => 0,
                 'expires_at' => now()->addMinutes(self::OTP_TTL_MINUTES),
+                'expires_at_epoch' => now()->addMinutes(self::OTP_TTL_MINUTES)->timestamp,
                 'verified_at' => null,
             ]
         );
 
         try {
             Mail::to($user->email)->send(new PasswordRecoveryOtp($code));
+            // Inicia la ventana completa al terminar el envío SMTP; epoch evita diferencias de zona horaria MySQL/PHP.
+            $expires = now()->addMinutes(self::OTP_TTL_MINUTES);
+            $otp = PasswordResetOtp::query()->where('user_id', $user->id)->first();
+            if ($otp && Hash::check($code, $otp->code_hash)) {
+                PasswordResetOtp::whereKey($otp->id)->where('code_hash',$otp->code_hash)->update(['expires_at' => $expires, 'expires_at_epoch' => $expires->timestamp]);
+            }
         } catch (Throwable $exception) {
             Log::error('No se pudo enviar el correo de recuperación de contraseña.', [
                 'exception' => $exception::class,
             ]);
         }
+        return now()->addMinutes(self::OTP_TTL_MINUTES)->timestamp;
     }
 
     public function verifyCode(string $email, string $code): ?User
@@ -59,7 +67,7 @@ class PasswordRecoveryService
         return DB::transaction(function () use ($user, $code) {
             $otp = PasswordResetOtp::query()->where('user_id', $user->id)->lockForUpdate()->first();
 
-            if (! $otp || $otp->expires_at->isPast() || $otp->attempts >= self::MAX_ATTEMPTS || $otp->verified_at) {
+            if (! $otp || $otp->isExpired() || $otp->attempts >= self::MAX_ATTEMPTS || $otp->verified_at) {
                 return null;
             }
 
@@ -77,11 +85,8 @@ class PasswordRecoveryService
 
     public function canReset(int $userId): bool
     {
-        return PasswordResetOtp::query()
-            ->where('user_id', $userId)
-            ->whereNotNull('verified_at')
-            ->where('expires_at', '>', now())
-            ->exists();
+        $otp = PasswordResetOtp::query()->where('user_id', $userId)->whereNotNull('verified_at')->first();
+        return $otp !== null && ! $otp->isExpired();
     }
 
     public function resetPassword(int $userId, string $password): bool
@@ -89,7 +94,7 @@ class PasswordRecoveryService
         return DB::transaction(function () use ($userId, $password) {
             $otp = PasswordResetOtp::query()->where('user_id', $userId)->lockForUpdate()->first();
 
-            if (! $otp || ! $otp->verified_at || $otp->expires_at->isPast()) {
+            if (! $otp || ! $otp->verified_at || $otp->isExpired()) {
                 return false;
             }
 
@@ -104,6 +109,7 @@ class PasswordRecoveryService
                 'remember_token' => Str::random(60),
             ])->save();
             $user->tokens()->delete();
+            app(LoginProtectionService::class)->clear($user->email);
             $otp->delete();
 
             return true;

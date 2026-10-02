@@ -98,6 +98,42 @@ class ClientManagementTest extends TestCase
         $this->assertDatabaseCount('clients', 0);
     }
 
+    public function test_client_with_opportunities_cannot_be_deleted_even_by_a_direct_request(): void
+    {
+        $user = $this->userWithClientPermission();
+        $client = $user->clients()->create($this->clientData());
+        $opportunity = $user->salesOpportunities()->create([
+            'client_id' => $client->id,
+            'title' => 'Negociación vigente',
+            'estimated_value' => 1500,
+            'stage' => 'contact',
+        ]);
+
+        $this->actingAs($user)->delete(route('admin.clients.destroy', $client))
+            ->assertRedirect(route('admin.clients.index'))->assertSessionHas('error');
+        $this->assertDatabaseHas('clients', ['id' => $client->id]);
+        $this->assertDatabaseHas('sales_opportunities', ['id' => $opportunity->id]);
+        $this->get(route('admin.clients.index'))->assertOk()
+            ->assertSee('No puedes eliminar un cliente con oportunidades asociadas.')
+            ->assertSee('Tiene oportunidades asociadas; puedes inactivarlo.');
+    }
+
+    public function test_client_name_is_escaped_and_account_cannot_be_changed_through_the_form(): void
+    {
+        $user = $this->userWithClientPermission();
+        $otherUser = User::factory()->create();
+        $name = '<script>alert("prueba")</script>';
+
+        $this->actingAs($user)->post(route('admin.clients.store'), $this->clientData([
+            'name' => $name,
+            'user_id' => $otherUser->id,
+        ]))->assertRedirect(route('admin.clients.index'));
+
+        $this->assertDatabaseHas('clients', ['name' => $name, 'user_id' => $user->id]);
+        $this->get(route('admin.clients.index'))->assertOk()
+            ->assertSee($name)->assertDontSee($name, false);
+    }
+
     private function userWithClientPermission(string $email = 'clients@cowapp.test'): User
     {
         $permission = Permission::query()->where('code', 'clients.manage')->firstOrFail();

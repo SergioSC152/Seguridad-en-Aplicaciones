@@ -27,6 +27,7 @@
     </div>
 
     @if(session('success'))<div class="alert alert-success" role="status">{{ session('success') }}</div>@endif
+    @if(session('error'))<div class="alert alert-danger" role="alert">{{ session('error') }}</div>@endif
     @if($errors->any())<div class="alert alert-danger" role="alert"><div class="fw-semibold mb-1">Revisa los campos indicados:</div><ul class="mb-0">@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul></div>@endif
 
     <section id="client-form" class="cow-card-surface client-form-card p-3 p-md-4 mb-4">
@@ -56,10 +57,10 @@
         </div></div>
         <div class="table-responsive"><table class="table table-hover client-table align-middle mb-0"><thead class="table-light"><tr><th>Cliente</th><th>Contacto</th><th>Ubicación</th><th>Estado</th><th class="text-end">Acciones</th></tr></thead><tbody>
             @forelse($clients as $client)
-                <tr><td><div class="fw-semibold text-dark">{{ $client->name }}</div><div class="small text-secondary">{{ $client->client_type === 'business' ? 'Empresa / organización' : 'Persona' }}{{ $client->document_number ? ' · '.$client->document_number : '' }}</div></td><td><div>{{ $client->contact_person ?: '—' }}</div><div class="small text-secondary">{{ $client->email ?: $client->phone ?: 'Sin datos de contacto' }}</div></td><td>{{ collect([$client->municipality, $client->department])->filter()->join(', ') ?: '—' }}</td><td><span class="badge rounded-pill {{ $client->status === 'active' ? 'text-bg-success' : 'text-bg-secondary' }}">{{ $client->status === 'active' ? 'Activo' : 'Inactivo' }}</span></td><td class="text-end text-nowrap"><a href="{{ route('admin.clients.edit', $client) }}" class="btn btn-sm btn-outline-success rounded-3">Editar</a><form method="POST" action="{{ route('admin.clients.destroy', $client) }}" class="d-inline" onsubmit="return confirm('¿Eliminar este cliente?')">@csrf @method('DELETE')<button type="submit" class="btn btn-sm btn-outline-danger rounded-3">Eliminar</button></form></td></tr>
+                <tr><td><div class="fw-semibold text-dark">{{ $client->name }}</div><div class="small text-secondary">{{ $client->client_type === 'business' ? 'Empresa / organización' : 'Persona' }}{{ $client->document_number ? ' · '.$client->document_number : '' }}</div></td><td><div>{{ $client->contact_person ?: '—' }}</div><div class="small text-secondary">{{ $client->email ?: $client->phone ?: 'Sin datos de contacto' }}</div></td><td>{{ collect([$client->municipality, $client->department])->filter()->join(', ') ?: '—' }}</td><td><span class="badge rounded-pill {{ $client->status === 'active' ? 'text-bg-success' : 'text-bg-secondary' }}">{{ $client->status === 'active' ? 'Activo' : 'Inactivo' }}</span></td><td class="text-end text-nowrap"><a href="{{ route('admin.clients.edit', $client) }}" class="btn btn-sm btn-outline-success rounded-3">Editar</a><form method="POST" action="{{ route('admin.clients.destroy', $client) }}" class="d-inline" onsubmit="return confirm('¿Eliminar este cliente?')">@csrf @method('DELETE')<button type="submit" class="btn btn-sm btn-outline-danger rounded-3" @disabled($client->sales_opportunities_count > 0)>Eliminar</button></form>@if($client->sales_opportunities_count > 0)<div class="small text-secondary mt-1">Tiene oportunidades asociadas; puedes inactivarlo.</div>@endif</td></tr>
             @empty<tr><td colspan="5" class="text-center text-secondary py-5"><i class="bi bi-person-plus fs-2 d-block text-success mb-2"></i>{{ ($filters['q'] ?? null) || ($filters['status'] ?? null) ? 'No hay clientes que coincidan con la búsqueda.' : 'Todavía no tienes clientes registrados.' }}</td></tr>@endforelse
         </tbody></table></div>
-        @if($clients->hasPages())<div class="p-3 p-md-4">{{ $clients->links() }}</div>@endif
+        @if($clients->hasPages())<div class="p-3 p-md-4">{{ $clients->links('pagination::bootstrap-5') }}</div>@endif
     </section>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

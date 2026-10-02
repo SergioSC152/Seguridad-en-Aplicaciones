@@ -399,7 +399,7 @@
                                 placeholder="••••••••••••"
                                 required
                             >
-                            <button class="cow-btn-toggle-pwd" type="button" id="togglePassword" aria-label="Mostrar contraseña" title="Mostrar/Ocultar contraseña">
+                            <button class="cow-btn-toggle-pwd" type="button" id="togglePassword" aria-label="Mostrar contraseña" aria-controls="password" aria-pressed="false" title="Mostrar contraseña">
                                 <i class="bi bi-eye" id="togglePasswordIcon"></i>
                             </button>
                         </div>
@@ -440,22 +440,5 @@
 
     <!-- Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        const toggleBtn = document.getElementById('togglePassword');
-        const passwordInput = document.getElementById('password');
-        const toggleIcon = document.getElementById('togglePasswordIcon');
-
-        if (toggleBtn && passwordInput) {
-            toggleBtn.addEventListener('click', function () {
-                const isPassword = passwordInput.getAttribute('type') === 'password';
-                passwordInput.setAttribute('type', isPassword ? 'text' : 'password');
-                
-                if (toggleIcon) {
-                    toggleIcon.className = isPassword ? 'bi bi-eye-slash' : 'bi bi-eye';
-                }
-                toggleBtn.setAttribute('aria-label', isPassword ? 'Ocultar contraseña' : 'Mostrar contraseña');
-            });
-        }
-    </script>
 </body>
 </html>

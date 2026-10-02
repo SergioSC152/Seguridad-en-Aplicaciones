@@ -29,7 +29,7 @@ Route::get('/contacto', [ContactController::class, 'show'])->name('contact.show'
 Route::post('/contacto', [ContactController::class, 'send'])->name('contact.send');
 
 // Rutas de Autenticación
-Route::middleware('guest')->group(function () {
+Route::middleware(['guest', 'no-cache'])->group(function () {
     Route::get('/forgot-password', [PasswordRecoveryController::class, 'requestForm'])
         ->name('password.request');
     Route::post('/forgot-password', [PasswordRecoveryController::class, 'send'])
@@ -67,7 +67,7 @@ Route::middleware('guest')->group(function () {
 | Rutas Protegidas (Panel Administrativo CRM / CMS)
 |--------------------------------------------------------------------------
 */
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'no-cache'])->group(function () {
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
 
     Route::post('/logout', [LoginController::class, 'destroy'])

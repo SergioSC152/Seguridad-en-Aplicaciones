@@ -13,6 +13,7 @@ class ClientService
     public function paginateFor(User $user, array $filters = []): LengthAwarePaginator
     {
         return $user->clients()
+            ->withCount('salesOpportunities')
             ->when($filters['q'] ?? null, function ($query, string $search): void {
                 $term = '%'.$search.'%';
                 $query->where(function ($matches) use ($term): void {
@@ -46,8 +47,18 @@ class ClientService
         });
     }
 
-    public function delete(Client $client): void
+    public function delete(Client $client): bool
     {
-        DB::transaction(fn () => $client->delete());
+        return DB::transaction(function () use ($client): bool {
+            $lockedClient = Client::query()->whereKey($client->id)->lockForUpdate()->firstOrFail();
+
+            if ($lockedClient->salesOpportunities()->exists()) {
+                return false;
+            }
+
+            $lockedClient->delete();
+
+            return true;
+        });
     }
 }

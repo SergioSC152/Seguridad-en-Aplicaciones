@@ -56,7 +56,9 @@ class ClientController extends Controller
     public function destroy(Client $client): RedirectResponse
     {
         Gate::authorize('delete', $client);
-        $this->clients->delete($client);
+        if (! $this->clients->delete($client)) {
+            return to_route('admin.clients.index')->with('error', 'No puedes eliminar un cliente con oportunidades asociadas. Puedes marcarlo como inactivo.');
+        }
 
         return to_route('admin.clients.index')->with('success', 'Cliente eliminado correctamente.');
     }

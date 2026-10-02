@@ -31,6 +31,8 @@ class LivestockBatchController extends Controller
             'categories' => LivestockCategory::query()->where('user_id', $request->user()->id)->orderBy('name')->get(),
             'filters' => $filters,
             'editingBatch' => null,
+            'farmNames' => $request->user()->livestockBatches()->whereNotNull('farm_name')->distinct()->orderBy('farm_name')->pluck('farm_name'),
+            'paddocks' => $request->user()->livestockBatches()->whereNotNull('paddock')->distinct()->orderBy('paddock')->pluck('paddock'),
         ]);
     }
 
@@ -56,6 +58,8 @@ class LivestockBatchController extends Controller
             'categories' => LivestockCategory::query()->where('user_id', $request->user()->id)->orderBy('name')->get(),
             'filters' => $filters,
             'editingBatch' => $batch,
+            'farmNames' => $request->user()->livestockBatches()->whereNotNull('farm_name')->distinct()->orderBy('farm_name')->pluck('farm_name'),
+            'paddocks' => $request->user()->livestockBatches()->whereNotNull('paddock')->distinct()->orderBy('paddock')->pluck('paddock'),
         ]);
     }
 

@@ -22,6 +22,8 @@ class LivestockBatch extends Model
         'paddock',
         'status',
         'notes',
+        'image_path',
+        'image_url',
     ];
 
     protected function casts(): array

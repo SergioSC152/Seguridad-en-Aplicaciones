@@ -19,7 +19,8 @@ class UpdateLivestockBatchRequest extends FormRequest
         $batch = $this->route('batch');
 
         return [
-            'livestock_category_id' => ['required', Rule::exists('livestock_categories', 'id')->where('user_id', $this->user()->id)],
+            'livestock_category_id' => ['nullable', 'required_without:new_category_name', Rule::exists('livestock_categories', 'id')->where('user_id', $this->user()->id)],
+            'new_category_name' => ['nullable', 'required_without:livestock_category_id', 'prohibited_with:livestock_category_id', 'string', 'max:100'],
             'code' => ['required', 'string', 'max:50', Rule::unique('livestock_batches', 'code')->where('user_id', $this->user()->id)->ignore($batch)],
             'ear_tag' => ['nullable', 'string', 'max:80'],
             'head_count' => ['required', 'integer', 'min:1', 'max:1000000'],
@@ -28,6 +29,8 @@ class UpdateLivestockBatchRequest extends FormRequest
             'paddock' => ['nullable', 'string', 'max:100'],
             'status' => ['required', Rule::in(LivestockBatch::STATUSES)],
             'notes' => ['nullable', 'string', 'max:5000'],
+            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120', 'dimensions:max_width=6000,max_height=6000'],
+            'remove_image' => ['sometimes', 'boolean'],
         ];
     }
 }

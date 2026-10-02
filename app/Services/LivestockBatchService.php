@@ -6,6 +6,9 @@ use App\Models\LivestockBatch;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
+use Throwable;
 
 class LivestockBatchService
 {
@@ -30,20 +33,91 @@ class LivestockBatchService
 
     public function create(User $user, array $data): LivestockBatch
     {
-        return DB::transaction(fn () => $user->livestockBatches()->create($data));
+        $image = $data['image'] ?? null;
+        unset($data['image']);
+        $path = null;
+
+        try {
+            if ($image) {
+                $path = $image->store('livestock-batches/'.$user->id, 'public');
+                if (! $path) {
+                    throw ValidationException::withMessages(['image' => 'No se pudo guardar la imagen del lote. Inténtalo nuevamente.']);
+                }
+                $data['image_path'] = $path;
+                $data['image_url'] = '/storage/'.$path;
+            }
+
+            return DB::transaction(function () use ($user, $data) {
+                $data = $this->resolveCategory($user, $data);
+
+                return $user->livestockBatches()->create($data);
+            });
+        } catch (Throwable $exception) {
+            if ($path) {
+                Storage::disk('public')->delete($path);
+            }
+            throw $exception;
+        }
     }
 
     public function update(LivestockBatch $batch, array $data): LivestockBatch
     {
-        return DB::transaction(function () use ($batch, $data) {
-            $batch->update($data);
+        $image = $data['image'] ?? null;
+        $remove = (bool) ($data['remove_image'] ?? false);
+        unset($data['image'], $data['remove_image']);
+        $oldPath = $batch->image_path;
+        $newPath = null;
 
-            return $batch->refresh();
-        });
+        try {
+            if ($image) {
+                $newPath = $image->store('livestock-batches/'.$batch->user_id, 'public');
+                if (! $newPath) {
+                    throw ValidationException::withMessages(['image' => 'No se pudo guardar la imagen del lote. Inténtalo nuevamente.']);
+                }
+                $data['image_path'] = $newPath;
+                $data['image_url'] = '/storage/'.$newPath;
+            } elseif ($remove) {
+                $data['image_path'] = null;
+                $data['image_url'] = null;
+            }
+
+            DB::transaction(function () use ($batch, $data) {
+                $batch->update($this->resolveCategory($batch->user, $data));
+            });
+        } catch (Throwable $exception) {
+            if ($newPath) {
+                Storage::disk('public')->delete($newPath);
+            }
+            throw $exception;
+        }
+
+        if (($newPath || $remove) && $oldPath) {
+            Storage::disk('public')->delete($oldPath);
+        }
+
+        return $batch->refresh();
     }
 
     public function delete(LivestockBatch $batch): void
     {
+        $path = $batch->image_path;
         DB::transaction(fn () => $batch->delete());
+        if ($path) {
+            Storage::disk('public')->delete($path);
+        }
+    }
+
+    private function resolveCategory(User $user, array $data): array
+    {
+        if (filled($data['new_category_name'] ?? null)) {
+            $category = $user->livestockCategories()->firstOrCreate(
+                ['name' => trim($data['new_category_name'])],
+                ['active' => true]
+            );
+            $data['livestock_category_id'] = $category->id;
+        }
+        unset($data['new_category_name']);
+
+        return $data;
     }
 }

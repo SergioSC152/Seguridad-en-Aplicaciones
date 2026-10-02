@@ -57,6 +57,8 @@ El registro API necesita revisar la reserva del correo administrador, igual que 
 
 ## Validaciones disponibles
 
+Se incorpora, por solicitud del responsable, un ajuste de Lotes antes de continuar el orden comercial: sugerencias de razas/ubicaciones, imagen opcional y configuración de recuperación por Gmail. No implica iniciar los módulos comerciales siguientes. Su validación está en `validacion-lotes-imagen-correo.md`; tanto esta validación como Clientes permanecen pendientes hasta recibir resultados.
+
 - `validacion-fase-panel.md`: panel y auditoría inicial.
 - `validacion-registro-logo.md`: registro e imagen con URL en base de datos.
 - `validacion-login-historial.md`: correcciones de contraseña y navegación tras logout.

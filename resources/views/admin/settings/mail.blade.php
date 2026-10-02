@@ -34,6 +34,11 @@
             <section class="cow-card-surface p-3 p-md-4">
                 <h2 class="h5 fw-bold mb-1">Servidor de correo</h2>
                 <p class="small text-secondary mb-4">Usa el host y las credenciales proporcionadas por tu proveedor SMTP.</p>
+                <div class="alert alert-info small" role="note">
+                    <strong>Gmail:</strong> usa <code>smtp.gmail.com</code>, puerto <code>587</code>, TLS, tu correo completo como usuario y una contraseña de aplicación (requiere verificación en dos pasos). El remitente debe ser ese mismo correo.
+                    <br><strong>Mailtrap Sandbox:</strong> los mensajes se ven en su bandeja de pruebas; no llegan al correo real del destinatario.
+                    <br>La configuración guardada aquí tiene prioridad sobre los valores de correo del archivo de entorno. Guardar no confirma que el proveedor haya aceptado un envío.
+                </div>
                 <form method="POST" action="{{ route('admin.settings.mail.update') }}" autocomplete="off">
                     @csrf
                     @method('PUT')

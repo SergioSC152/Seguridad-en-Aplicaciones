@@ -19,6 +19,14 @@ class RegisterUserRequest extends FormRequest
         return true;
     }
 
+    public function messages(): array
+    {
+        return [
+            'email.unique' => 'Ya existe un usuario con ese correo. Inicia sesión o recupera tu contraseña.',
+            'email.not_in' => 'Este correo está reservado para la cuenta administradora.',
+        ];
+    }
+
     public function rules(): array
     {
         $rootEmail = config('cowapp.mail_settings_admin_email');

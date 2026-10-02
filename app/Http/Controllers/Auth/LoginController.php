@@ -33,9 +33,13 @@ class LoginController extends Controller
 
         if (! Auth::attempt($credentials, $request->boolean('remember'))) {
             $protection->failed($credentials['email']);
+            if ($protection->blocked($credentials['email'])) {
+                return back()->withErrors(['email' => 'Cinco intentos fallidos: acceso bloqueado temporalmente por correo. Puedes recuperar tu contraseña.'])->onlyInput('email');
+            }
+            $exists = User::whereRaw('LOWER(email) = ?', [$credentials['email']])->exists();
             return back()
                 ->withErrors([
-                    'email' => $protection->blocked($credentials['email']) ? 'Cinco contraseñas incorrectas: acceso bloqueado temporalmente por correo. Puedes recuperar tu contraseña.' : 'Las credenciales proporcionadas no son válidas.',
+                    $exists ? 'password' : 'email' => $exists ? 'Contraseña incorrecta.' : 'No existe un usuario con ese correo.',
                 ])
                 ->onlyInput('email');
         }

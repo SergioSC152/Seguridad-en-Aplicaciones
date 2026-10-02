@@ -22,6 +22,9 @@ class AuthController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email', Rule::notIn([mb_strtolower((string) config('cowapp.mail_settings_admin_email'))])],
             'password' => ['required', 'string', 'min:8'],
+        ], [
+            'email.unique' => 'Ya existe un usuario con ese correo. Inicia sesión o recupera tu contraseña.',
+            'email.not_in' => 'Este correo está reservado para la cuenta administradora.',
         ]);
 
         $user = User::create([
@@ -62,8 +65,11 @@ class AuthController extends Controller
 
         if (! $user || ! Hash::check($credentials['password'], $user->password)) {
             $protection->failed($credentials['email']);
+            if ($protection->blocked($credentials['email'])) {
+                return response()->json(['message' => 'Cinco intentos fallidos: acceso bloqueado temporalmente por correo.', 'retry_after' => $protection->seconds($credentials['email'])], 429);
+            }
             return response()->json([
-                'message' => 'Credenciales inválidas.',
+                'message' => $user ? 'Contraseña incorrecta.' : 'No existe un usuario con ese correo.',
             ], 401);
         }
         $protection->clear($credentials['email']);

@@ -17,7 +17,7 @@ class StoreLivestockBatchRequest extends FormRequest
     {
         return [
             'livestock_category_id' => ['nullable', 'required_without:new_category_name', Rule::exists('livestock_categories', 'id')->where('user_id', $this->user()->id)],
-            'new_category_name' => ['nullable', 'required_without:livestock_category_id', 'prohibited_with:livestock_category_id', 'string', 'max:100'],
+            'new_category_name' => ['nullable', 'required_without:livestock_category_id', Rule::prohibitedIf(fn () => filled($this->input('livestock_category_id'))), 'string', 'max:100'],
             'code' => ['required', 'string', 'max:50', Rule::unique('livestock_batches', 'code')->where('user_id', $this->user()->id)],
             'ear_tag' => ['nullable', 'string', 'max:80'],
             'head_count' => ['required', 'integer', 'min:1', 'max:1000000'],

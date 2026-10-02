@@ -8,7 +8,7 @@
 <div class="col-12 col-md-6"><label for="field-{{ $key }}" class="form-label">{{ $field[0] }}</label>
 @if($field[1]==='select')<select class="form-select" id="field-{{ $key }}" name="{{ $key }}"><option value="">Seleccionar</option>@foreach($field[2] as $option=>$label)<option value="{{ $option }}" @selected((string)$value===(string)$option)>{{ $label }}</option>@endforeach</select>
 @elseif($field[1]==='textarea')<textarea class="form-control" id="field-{{ $key }}" name="{{ $key }}" rows="3" maxlength="5000">{{ $value }}</textarea>
-@else<input class="form-control" id="field-{{ $key }}" name="{{ $key }}" type="{{ $field[1] }}" @if($field[1]==='number') step="0.01" min="0" @endif value="{{ $value instanceof \DateTimeInterface ? $value->format('Y-m-d\TH:i') : $value }}">@endif
+@else<input class="form-control" id="field-{{ $key }}" name="{{ $key }}" type="{{ $field[1] }}" @if(in_array($field[1],['text','url'])) maxlength="{{ $key === 'link_url' ? 2048 : 160 }}" @endif @if($field[1]==='number') step="0.01" min="0" @endif value="{{ $value instanceof \DateTimeInterface ? $value->format('Y-m-d\TH:i') : $value }}">@endif
 @error($key)<div class="text-danger small">{{ $message }}</div>@enderror</div>
 @endforeach
 <div class="col-12"><button class="btn btn-success">Guardar</button> @if($editing)<a href="{{ route($routeBase.'.index') }}" class="btn btn-outline-secondary">Cancelar</a>@endif</div></form></section>

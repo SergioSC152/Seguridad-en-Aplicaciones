@@ -27,7 +27,7 @@ class StoreLeadRequest extends FormRequest
             'name' => ['required', 'string', 'max:160'],
             'farm_name' => ['nullable', 'string', 'max:160'],
             'phone' => ['nullable', 'string', 'max:40'],
-            'email' => ['nullable', 'email', 'max:255'],
+            'email' => ['nullable', 'email', 'max:100'],
             'municipality' => ['nullable', 'string', 'max:100'],
             'department' => ['nullable', 'string', 'max:100'],
             'source' => ['required', Rule::in(array_keys(Lead::SOURCES))],

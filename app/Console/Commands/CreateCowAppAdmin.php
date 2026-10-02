@@ -14,8 +14,8 @@ class CreateCowAppAdmin extends Command
         if (User::whereRaw('LOWER(email) = ?',[$email])->exists()) {$this->info('La cuenta administradora ya existe; no se cambió su contraseña.');return self::SUCCESS;}
         if (!$this->input->isInteractive()) {$this->error('Se requiere terminal interactiva para entrada oculta.');return self::FAILURE;}
         $name=$this->ask('Nombre del administrador','Administrador CowApp');
-        try {$password=$this->secret('Contraseña CowApp (mínimo 12 caracteres)',false);$confirmation=$this->secret('Confirma la contraseña',false);}catch(\Throwable){$this->error('La terminal no admite entrada oculta.');return self::FAILURE;}
-        if (Validator::make(['name'=>$name,'password'=>$password,'password_confirmation'=>$confirmation],['name'=>'required|string|max:255','password'=>'required|string|min:12|confirmed'])->fails()) {$this->error('Revisa nombre, longitud y confirmación.');return self::FAILURE;}
+        try {$password=$this->secret('Contraseña CowApp (entre 12 y 25 caracteres)',false);$confirmation=$this->secret('Confirma la contraseña',false);}catch(\Throwable){$this->error('La terminal no admite entrada oculta.');return self::FAILURE;}
+        if (Validator::make(['name'=>$name,'password'=>$password,'password_confirmation'=>$confirmation],['name'=>['required','string','max:100','regex:/^[\p{L}\p{M}]+(?:[ \x{0027}\x{2019}\-][\p{L}\p{M}]+)*$/u'],'password'=>'required|string|min:12|max:25|confirmed'])->fails()) {$this->error('Revisa nombre, longitud y confirmación.');return self::FAILURE;}
         User::create(['name'=>$name,'email'=>$email,'password'=>Hash::make($password)]);unset($password,$confirmation);
         $this->info('Administrador creado. Inicia sesión con el correo configurado y la contraseña CowApp que elegiste.');return self::SUCCESS;
     }

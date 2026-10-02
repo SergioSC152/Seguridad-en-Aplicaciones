@@ -110,17 +110,17 @@
 
                         <div class="mb-3">
                             <label class="form-label fw-semibold small text-dark">Título de la Noticia</label>
-                            <input type="text" name="title" class="form-control rounded-3" placeholder="Ej: Nueva subasta ganadera 2026" value="{{ old('title') }}" required>
+                            <input type="text" name="title" class="form-control rounded-3" placeholder="Ej: Nueva subasta ganadera 2026" value="{{ old('title') }}" required maxlength="255">
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label fw-semibold small text-dark">Extracto / Resumen corto</label>
-                            <input type="text" name="excerpt" class="form-control rounded-3" placeholder="Breve descripción para la portada" value="{{ old('excerpt') }}">
+                            <input type="text" name="excerpt" class="form-control rounded-3" placeholder="Breve descripción para la portada" value="{{ old('excerpt') }}" maxlength="500">
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label fw-semibold small text-dark">Contenido de la Noticia</label>
-                            <textarea name="content" class="form-control rounded-3" rows="4" placeholder="Escribe el artículo completo..." required>{{ old('content') }}</textarea>
+                            <textarea name="content" class="form-control rounded-3" rows="4" placeholder="Escribe el artículo completo..." required maxlength="20000">{{ old('content') }}</textarea>
                         </div>
 
                         <!-- Selección de Imagen Existente o Carga Nueva -->
@@ -261,15 +261,15 @@
                                                                 <div class="col-md-6">
                                                                     <div class="mb-3">
                                                                         <label class="form-label fw-semibold small">Título</label>
-                                                                        <input type="text" name="title" class="form-control rounded-3" value="{{ $item->title }}" required>
+                                                                        <input type="text" name="title" class="form-control rounded-3" value="{{ $item->title }}" required maxlength="255">
                                                                     </div>
                                                                     <div class="mb-3">
                                                                         <label class="form-label fw-semibold small">Extracto</label>
-                                                                        <input type="text" name="excerpt" class="form-control rounded-3" value="{{ $item->excerpt }}">
+                                                                        <input type="text" name="excerpt" class="form-control rounded-3" value="{{ $item->excerpt }}" maxlength="500">
                                                                     </div>
                                                                     <div class="mb-3">
                                                                         <label class="form-label fw-semibold small">Contenido</label>
-                                                                        <textarea name="content" class="form-control rounded-3" rows="4" required>{{ $item->content }}</textarea>
+                                                                        <textarea name="content" class="form-control rounded-3" rows="4" required maxlength="20000">{{ $item->content }}</textarea>
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-md-6">

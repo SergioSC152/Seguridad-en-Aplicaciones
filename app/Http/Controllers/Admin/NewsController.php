@@ -29,7 +29,7 @@ class NewsController extends Controller
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'excerpt' => ['nullable', 'string', 'max:500'],
-            'content' => ['required', 'string'],
+            'content' => ['required', 'string', 'max:20000'],
             'media_id' => ['nullable', 'exists:media,id'],
             'file' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp,gif', 'max:5120'],
             'published' => ['nullable', 'boolean'],
@@ -74,7 +74,7 @@ class NewsController extends Controller
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'excerpt' => ['nullable', 'string', 'max:500'],
-            'content' => ['required', 'string'],
+            'content' => ['required', 'string', 'max:20000'],
             'media_id' => ['nullable', 'exists:media,id'],
             'file' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp,gif', 'max:5120'],
             'published' => ['nullable', 'boolean'],

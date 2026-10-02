@@ -377,7 +377,7 @@
                                 autocomplete="username"
                                 required
                                 autofocus
-                            >
+                             maxlength="100">
                         </div>
                     </div>
 
@@ -398,7 +398,7 @@
                                 autocomplete="current-password"
                                 placeholder="••••••••••••"
                                 required
-                            >
+                             maxlength="25">
                             <button class="cow-btn-toggle-pwd" type="button" id="togglePassword" aria-label="Mostrar contraseña" aria-controls="password" aria-pressed="false" title="Mostrar contraseña">
                                 <i class="bi bi-eye" id="togglePasswordIcon"></i>
                             </button>

@@ -21,7 +21,7 @@ class UpdateMailSettingsRequest extends FormRequest
             'username' => ['nullable', 'string', 'max:255'],
             'password' => ['nullable', 'string', 'max:1024'],
             'encryption' => ['required', Rule::in(['tls', 'ssl'])],
-            'from_address' => ['required', 'email', 'max:255'],
+            'from_address' => ['required', 'email', 'max:100'],
             'from_name' => ['required', 'string', 'max:255'],
         ];
     }

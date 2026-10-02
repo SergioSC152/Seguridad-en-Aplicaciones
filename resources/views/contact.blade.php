@@ -108,17 +108,17 @@
 
                         <div class="mb-3">
                             <label class="form-label fw-semibold small text-dark">Nombre completo</label>
-                            <input type="text" name="name" class="form-control rounded-3 py-2" placeholder="Nombre" value="{{ old('name') }}" required>
+                            <input type="text" name="name" class="form-control rounded-3 py-2" placeholder="Nombre" value="{{ old('name') }}" required maxlength="100">
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label fw-semibold small text-dark">Correo electrónico</label>
-                            <input type="email" name="email" class="form-control rounded-3 py-2" placeholder="Correo electrónico" value="{{ old('email') }}" required>
+                            <input type="email" name="email" class="form-control rounded-3 py-2" placeholder="Correo electrónico" value="{{ old('email') }}" required maxlength="100">
                         </div>
 
                         <div class="mb-4">
                             <label class="form-label fw-semibold small text-dark">Mensaje</label>
-                            <textarea name="message" class="form-control rounded-3 py-2" rows="5" placeholder="Mensaje" required>{{ old('message') }}</textarea>
+                            <textarea name="message" class="form-control rounded-3 py-2" rows="5" placeholder="Mensaje" required maxlength="5000">{{ old('message') }}</textarea>
                         </div>
 
                         <button type="submit" class="btn btn-primary w-100 py-2.5 rounded-3 fw-bold d-flex align-items-center justify-content-center gap-2">

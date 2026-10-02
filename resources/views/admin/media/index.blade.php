@@ -150,7 +150,7 @@
 
                         <div class="mb-3">
                             <label class="form-label fw-semibold small text-dark">Nombre del archivo</label>
-                            <input type="text" name="name" class="form-control rounded-3" placeholder="Ej: Foto Lote Brahman" value="{{ old('name') }}" required>
+                            <input type="text" name="name" class="form-control rounded-3" placeholder="Ej: Foto Lote Brahman" value="{{ old('name') }}" required maxlength="255">
                         </div>
 
                         <div class="mb-4">
@@ -258,7 +258,7 @@
                                                     </div>
                                                     <div class="mb-3">
                                                         <label class="form-label fw-semibold small">Nombre del recurso</label>
-                                                        <input type="text" name="name" class="form-control rounded-3" value="{{ $item->name }}" required>
+                                                        <input type="text" name="name" class="form-control rounded-3" value="{{ $item->name }}" required maxlength="255">
                                                     </div>
                                                     <div class="mb-3">
                                                         <label class="form-label fw-semibold small">Nuevo archivo (Opcional para sustitución física)</label>

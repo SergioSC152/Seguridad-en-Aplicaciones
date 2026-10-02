@@ -72,9 +72,11 @@
                     class="form-control @error('name') is-invalid @enderror"
                     id="name"
                     name="name"
+                    pattern="[\p{L}\p{M}]+(?:[ \x27\u2019\-][\p{L}\p{M}]+)*"
+                    title="Solo letras, espacios, apóstrofos y guiones; sin números."
                     value="{{ old('name') }}"
                     placeholder="Ej. Juan Pérez"
-                    maxlength="255"
+                    maxlength="100"
                     autocomplete="name"
                     required
                     autofocus
@@ -90,7 +92,7 @@
                     name="email"
                     value="{{ old('email') }}"
                     placeholder="ejemplo@dominio.com"
-                    maxlength="255"
+                    maxlength="100"
                     autocomplete="email"
                     required
                 >
@@ -108,7 +110,7 @@
                         minlength="8"
                         autocomplete="new-password"
                         required
-                    >
+                     maxlength="25">
                     <button class="btn btn-outline-secondary btn-toggle-password" type="button" id="toggleRegPasswordBtn" aria-controls="password" aria-pressed="false">
                         Mostrar
                     </button>
@@ -129,7 +131,7 @@
                     minlength="8"
                     autocomplete="new-password"
                     required
-                >
+                 maxlength="25">
             </div>
 
             <div class="d-grid gap-2">

@@ -29,8 +29,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Permite que la aplicación arranque antes de ejecutar la migración inicial.
-        if (Schema::hasTable('mail_settings')) {
+        // Estos comandos no necesitan SMTP ni una conexión a la base de datos.
+        $withoutDatabase = $this->app->runningInConsole() && in_array($_SERVER['argv'][1] ?? '', [
+            'view:clear', 'config:clear', 'route:clear', 'route:list',
+            'route:cache', 'config:cache', 'package:discover', 'vendor:publish', 'test',
+        ], true);
+
+        // El acceso web y los comandos de correo conservan la configuración SMTP guardada.
+        if (! $withoutDatabase && Schema::hasTable('mail_settings')) {
             app(MailSettingsService::class)->apply();
         }
 

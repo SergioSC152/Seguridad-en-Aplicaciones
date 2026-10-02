@@ -26,7 +26,7 @@ class ContactController extends Controller
         // Validación del lado del servidor (Paso 6.6)
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:100'],
-            'email' => ['required', 'email', 'max:255'],
+            'email' => ['required', 'email', 'max:100'],
             'message' => ['required', 'string', 'max:5000'],
         ]);
 

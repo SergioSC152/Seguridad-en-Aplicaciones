@@ -1,0 +1,15 @@
+{
+    "The given data was invalid.": "Los datos proporcionados no son válidos.",
+    "(and :count more error)": "(y :count error más)",
+    "(and :count more errors)": "(y :count errores más)",
+    "Too Many Attempts.": "Demasiados intentos. Espera antes de volver a intentarlo.",
+    "Unauthorized": "Debes iniciar sesión.",
+    "Unauthenticated.": "Debes iniciar sesión.",
+    "Forbidden": "Acceso denegado",
+    "Not Found": "Página no encontrada",
+    "Page Expired": "La sesión o el formulario ha vencido",
+    "Too Many Requests": "Demasiadas solicitudes",
+    "Server Error": "Error del servidor",
+    "Service Unavailable": "Servicio no disponible",
+    "Go Home": "Ir al inicio"
+}

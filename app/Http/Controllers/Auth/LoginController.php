@@ -22,8 +22,8 @@ class LoginController extends Controller
     public function store(Request $request, LoginProtectionService $protection): RedirectResponse
     {
         $credentials = $request->validate([
-            'email' => ['required', 'email', 'max:255'],
-            'password' => ['required', 'string'],
+            'email' => ['required', 'email', 'max:100'],
+            'password' => ['required', 'string', 'max:25'],
         ]);
 
         $credentials['email'] = mb_strtolower(trim($credentials['email']));

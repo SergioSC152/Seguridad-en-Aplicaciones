@@ -34,7 +34,7 @@ class UpdateClientRequest extends FormRequest
             'client_type' => ['required', Rule::in(Client::TYPES)],
             'contact_person' => ['nullable', 'string', 'max:160'],
             'document_number' => ['nullable', 'string', 'max:40', Rule::unique('clients', 'document_number')->where('user_id', $userId)->ignore($client)],
-            'email' => ['nullable', 'email', 'max:255', Rule::unique('clients', 'email')->where('user_id', $userId)->ignore($client)],
+            'email' => ['nullable', 'email', 'max:100', Rule::unique('clients', 'email')->where('user_id', $userId)->ignore($client)],
             'phone' => ['nullable', 'string', 'max:40'],
             'municipality' => ['nullable', 'string', 'max:100'],
             'department' => ['nullable', 'string', 'max:100'],

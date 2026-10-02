@@ -19,10 +19,11 @@ class AuthController extends Controller
     {
         $request->merge(['email' => mb_strtolower(trim((string) $request->input('email')))]);
         $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email', Rule::notIn([mb_strtolower((string) config('cowapp.mail_settings_admin_email'))])],
-            'password' => ['required', 'string', 'min:8'],
+            'name' => ['required', 'string', 'max:100', 'regex:/^[\p{L}\p{M}]+(?:[ \x{0027}\x{2019}\-][\p{L}\p{M}]+)*$/u'],
+            'email' => ['required', 'string', 'email', 'max:100', 'unique:users,email', Rule::notIn([mb_strtolower((string) config('cowapp.mail_settings_admin_email'))])],
+            'password' => ['required', 'string', 'min:8', 'max:25'],
         ], [
+            'name.regex' => 'El nombre solo admite letras, espacios, apóstrofos y guiones; no admite números.',
             'email.unique' => 'Ya existe un usuario con ese correo. Inicia sesión o recupera tu contraseña.',
             'email.not_in' => 'Este correo está reservado para la cuenta administradora.',
         ]);
@@ -53,8 +54,8 @@ class AuthController extends Controller
     public function login(Request $request, LoginProtectionService $protection): JsonResponse
     {
         $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required', 'string'],
+            'email' => ['required', 'email', 'max:100'],
+            'password' => ['required', 'string', 'max:25'],
         ]);
         $credentials['email'] = mb_strtolower(trim($credentials['email']));
         if ($protection->blocked($credentials['email'])) {
